@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Studio Pulga — Onboarding</title>
+<title>Studio Pulga ~ Onboarding</title>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;700;900&family=Outfit:wght@300;400;500;600&family=Fredoka:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F4EADD;--bg2:#EAD8C5;--br:#6E2C14;--brl:rgba(110,44,20,0.13);--gray:rgba(110,44,20,0.5);--gray2:rgba(110,44,20,0.32);}
@@ -11,7 +11,7 @@
 html{scroll-behavior:smooth;}
 body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:var(--br);min-height:100vh;overflow-x:hidden;width:100%;max-width:100vw;}
 
-/* ── LOGIN ── */
+/* LOGIN */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
 .login{background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--brl);border-radius:24px;padding:52px 40px;width:100%;max-width:400px;text-align:center;animation:fadeUp .5s ease both;}
 .login-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:21px;letter-spacing:.03em;margin-bottom:8px;}
@@ -25,7 +25,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .err{font-size:12px;color:#c0392b;margin-top:10px;display:none;}
 
-/* ── FORM SCREEN ── */
+/* FORM SCREEN */
 #formScreen{display:none;opacity:0;transition:opacity .4s ease;}
 #formScreen.show{opacity:1;}
 
@@ -58,7 +58,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .secao-titulo{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray2);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--brl);}
 .secao-titulo:first-of-type{margin-top:0;}
 
-/* FIELD — novo design inspirado no fieldset */
+/* FIELD inspirado no fieldset */
 .field{margin-bottom:20px;position:relative;}
 .field-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
 .field-label{font-size:13px;font-weight:600;color:var(--br);line-height:1.5;flex:1;}
@@ -77,7 +77,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .field input[type=text],
 .field input[type=email],
 .field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--brl);border-radius:12px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:400;color:var(--br);outline:none;background:var(--bg);transition:border .2s,box-shadow .2s;resize:vertical;line-height:1.6;-webkit-appearance:none;appearance:none;}
-.field input:focus,.field textarea:focus{border-color:var(--br);background:#fff;box-shadow:0 0 0 3px rgba(110,44,20,.07);}
+.field input:focus,.field textarea:focus{border-color:var(--br);background:rgba(255,255,255,0.65);box-shadow:0 0 0 3px rgba(110,44,20,.07);}
 .field input::placeholder,.field textarea::placeholder{color:var(--gray2);}
 .field textarea{min-height:90px;}
 
@@ -116,7 +116,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .file-area-sub{display:none;}
 .file-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .file-lista{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
-.file-item{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#fff;border:1px solid var(--brl);border-radius:10px;font-size:13px;}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.45);border:1px solid var(--brl);border-radius:10px;font-size:13px;}
 .file-item-nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;}
 .file-item-size{font-size:11px;color:var(--gray);flex-shrink:0;}
 .file-item-rem{width:22px;height:22px;border-radius:50%;border:none;background:var(--bg2);color:var(--br);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
@@ -146,61 +146,126 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .loading-txt{font-family:'League Spartan',sans-serif;font-size:14px;color:var(--br);font-weight:700;letter-spacing:.04em;}
 
 @media(max-width:520px){
-  .card{padding:22px 16px;}
-  .aniv-row{grid-template-columns:1fr auto;}
-  .aniv-row input:first-child{grid-column:1/-1;}
+ .card{padding:22px 16px;}
+ .aniv-row{grid-template-columns:1fr auto;}
+ .aniv-row input:first-child{grid-column:1/-1;}
 }
 </style>
+
+<script>
+(function(){
+  var SKEY='sp_form_v1';
+  
+  window._salvarSessao=function(){
+    if(!nichoAtual) return;
+    var d={nicho:nichoAtual,campos:{},radios:{},anivN:[],anivD:[],ts:Date.now()};
+    document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]):not([type=checkbox]),#formConteudo textarea').forEach(function(el){
+      if(el.id) d.campos[el.id]=el.value;
+    });
+    document.querySelectorAll('#formConteudo .radio-opt.sel input').forEach(function(el){
+      d.radios[el.name]=el.value;
+    });
+    d.anivN=[...document.querySelectorAll('.aniv-nome')].map(function(i){return i.value;});
+    d.anivD=[...document.querySelectorAll('.aniv-data')].map(function(i){return i.value;});
+    d.anivExtra=document.querySelectorAll('.aniv-row').length-1;
+    try{localStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}
+  };
+
+  window._restaurarSessao=function(){
+    try{
+      var raw=localStorage.getItem(SKEY);
+      if(!raw) return false;
+      var d=JSON.parse(raw);
+      if(!d||!d.nicho||!SENHAS[d.nicho]) return false;
+      if(Date.now()-d.ts>86400000){localStorage.removeItem(SKEY);return false;}
+      nichoAtual=d.nicho;
+      document.getElementById('loginScreen').style.display='none';
+      var fs=document.getElementById('formScreen');
+      fs.style.display='block';
+      document.getElementById('topoNicho').textContent=SENHAS[nichoAtual];
+      document.getElementById('heroNicho').textContent=SENHAS[nichoAtual];
+      renderForm();
+      setTimeout(function(){
+        fs.classList.add('show');
+        observarCards();
+        for(var i=0;i<(d.anivExtra||0);i++) addAniversario();
+        Object.keys(d.campos||{}).forEach(function(id){
+          var el=document.getElementById(id);
+          if(el) el.value=d.campos[id];
+        });
+        var nomes=document.querySelectorAll('.aniv-nome');
+        var datas=document.querySelectorAll('.aniv-data');
+        (d.anivN||[]).forEach(function(v,i){if(nomes[i])nomes[i].value=v;});
+        (d.anivD||[]).forEach(function(v,i){if(datas[i])datas[i].value=v;});
+        Object.keys(d.radios||{}).forEach(function(name){
+          var val=d.radios[name];
+          var inp=document.querySelector('input[name="'+name+'"][value="'+val+'"]');
+          if(inp){inp.checked=true;inp.closest('.radio-opt').classList.add('sel');}
+        });
+        atualizarProgresso();
+      },150);
+      return true;
+    }catch(e){return false;}
+  };
+
+  window._limparSessao=function(){
+    try{localStorage.removeItem(SKEY);}catch(e){}
+  };
+
+  setInterval(function(){if(nichoAtual)window._salvarSessao();},4000);
+  window.addEventListener('beforeunload',function(){if(nichoAtual)window._salvarSessao();});
+})();
+</script>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginScreen">
-  <div class="login">
-    <div class="login-logo">STUDIO PULGA</div>
-    <div class="login-sub">Digite a senha que recebeu para<br>acessar seu formulário.</div>
-    <input class="inp" type="password" id="senhaInput" placeholder="••••••••••" autocomplete="off">
-    <button class="btn-main" onclick="fazerLogin()">Acessar →</button>
-    <div class="err" id="loginErro">Senha incorreta. Verifique e tente novamente.</div>
-  </div>
+ <div class="login">
+ <div class="login-logo">STUDIO PULGA</div>
+ <div class="login-sub">Digite a senha que recebeu para<br>acessar seu formulário.</div>
+ <input class="inp" type="password" id="senhaInput" placeholder="••••••••••" autocomplete="off">
+ <button class="btn-main" onclick="fazerLogin()">Acessar →</button>
+ <div class="err" id="loginErro">Senha incorreta. Verifique e tente novamente.</div>
+ </div>
 </div>
 
 <!-- FORMULÁRIO -->
 <div id="formScreen">
-  <div class="form-topo">
-    <div class="form-topo-logo">STUDIO PULGA</div>
-    <div class="form-topo-nicho" id="topoNicho"></div>
-  </div>
-  <div class="form-hero">
-    <div class="form-hero-tag">Onboarding</div>
-    <div class="form-hero-title">Conte tudo<br>pra gente.</div>
-    <div class="form-hero-sub">Essas informações guiam toda a nossa estratégia juntos — quanto mais você compartilhar, melhor o resultado.</div>
-    <div class="form-hero-nicho" id="heroNicho"></div>
-  </div>
-  <div class="progress-wrap">
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-txt" id="progressTxt">0% PREENCHIDO</div>
-  </div>
-  <div class="form-body">
-    <div id="formConteudo"></div>
-    <button class="btn-enviar" id="btnEnviar" onclick="enviarFormulario()">Enviar respostas →</button>
-  </div>
+ <div class="form-topo">
+ <div class="form-topo-logo">STUDIO PULGA</div>
+ <div class="form-topo-nicho" id="topoNicho"></div>
+ </div>
+ <div class="form-hero">
+ <div class="form-hero-tag">Onboarding</div>
+ <div class="form-hero-title">Conte tudo<br>pra gente.</div>
+ <div class="form-hero-sub">Essas informações guiam toda a nossa estratégia juntos ~ quanto mais você compartilhar, melhor o resultado.</div>
+ <div class="form-hero-nicho" id="heroNicho"></div>
+ </div>
+ <div class="progress-wrap">
+ <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+ <div class="progress-txt" id="progressTxt">0% PREENCHIDO</div>
+ </div>
+ <div class="form-body">
+ <div id="formConteudo"></div>
+ <button class="btn-enviar" id="btnEnviar" onclick="enviarFormulario()">Enviar respostas →</button>
+ </div>
 </div>
 
 <!-- SUCESSO -->
 <div id="successScreen">
-  <div class="success-logo" id="successLogo">STUDIO PULGA</div>
-  <div class="success-divider" id="successDivider"></div>
-  <div class="success-msg" id="successMsg">
-    Obrigado por dedicar seu tempo e compartilhar essas informações.<br>
-    Nossa equipe vai analisar cada detalhe com cuidado e entrar em contato<br>em breve com os próximos passos. 🤝
-  </div>
+ <div class="success-logo" id="successLogo">STUDIO PULGA</div>
+ <div class="success-divider" id="successDivider"></div>
+ <div class="success-msg" id="successMsg">
+ Obrigado por dedicar seu tempo e compartilhar essas informações.<br>
+ Nossa equipe vai analisar cada detalhe com cuidado e entrar em contato<br>em breve com os próximos passos. 
+ </div>
 </div>
 
 <!-- LOADING -->
 <div id="loadingOverlay" style="display:flex;display:none;">
-  <div class="spinner"></div>
-  <div class="loading-txt">Enviando respostas…</div>
+ <div class="spinner"></div>
+ <div class="loading-txt">Enviando respostas…</div>
 </div>
 
 <script>
@@ -215,279 +280,279 @@ const SENHAS={'Construtora00':'Construtora','Planejados01':'Loja de Planejados',
 
 let nichoAtual='',respostas={},arquivos=[],anivCount=1;
 
-// Exemplos para tooltips — baseados no doc fictício
+// Exemplos para tooltips ~ baseados no doc fictício
 const EXEMPLOS={
-  nome_empresa:'Ex: "Construtora Horizonte"',
-  produto_servico:'Ex: "Imóveis residenciais alto padrão"',
-  responsavel:'Ex: "Carlos Mendes"',
-  email:'Ex: "carlos@empresa.com.br"',
-  site:'Ex: "www.suaempresa.com.br"',
-  fase:'Ex: "Estamos em fase de crescimento consolidado, com 12 anos no mercado e expandindo para o litoral norte."',
-  mudancas:'Ex: "Aumentamos o ticket médio em 30% e conquistamos projetos acima de R$1,5M no último ano."',
-  trava:'Ex: "Falta de visibilidade digital — nossa presença nas redes não reflete o nível do que entregamos."',
-  resultado_6m:'Ex: "Que o Instagram se torne um canal de autoridade, atraindo clientes de médio-alto padrão."',
-  lancamentos:'Ex: "Lançamento do Residencial Aurora em março — 24 unidades na faixa de R$980k."',
-  visao_longo:'Ex: "Ser referência regional em construção de alto padrão, reconhecida em pelo menos 5 cidades."',
-  sonho:'Ex: "Que as pessoas vejam nosso prédio e digam \'isso é Horizonte\' — antes de ver qualquer placa."',
-  problemas_redes:'Ex: "Publicações irregulares, fotos sem padrão visual, nenhuma narrativa sobre os projetos."',
-  inspiracoes:'Ex: "@even.br, @casacor, @fendi — pela estética premium e peso de marca."',
-  mensagens:'Ex: "1. Entregamos no prazo. 2. Nossa obra é acompanhada de perto. 3. O imóvel valoriza."',
-  tom_voz:'Ex: "Sério, confiável, sofisticado sem ser distante. Fala com segurança, não com exagero."',
-  vantagens:'Ex: "Fotos dos canteiros de obra têm bom engajamento orgânico."',
-  mood:'Ex: "Jazz instrumental moderno — sofisticado, cadenciado, com profundidade."',
-  palavras_chave:'Ex: "Solidez, Precisão, Elegância"',
-  agencia_anterior:'Ex: "Não. É a primeira vez que contratamos um serviço de marketing especializado."',
-  equipe:'Ex: "Carlos (sócio) e Renata (gerente de vendas)."',
-  marca_pessoa:'Ex: "Um arquiteto de 45 anos, terno cinza sem gravata, fala pouco mas quando fala é cirúrgico."',
-  sentimento:'Ex: "Confiança. Que vejam nosso perfil e sintam que estão em boas mãos."',
-  marcas_insp:'Ex: "Apple, Rolex, Embraer — pela solidez e comunicação que não precisa gritar."',
-  nunca_soar:'Ex: "Barato, improvisado ou genérico. Nunca soar como mais uma empresa de plantão."',
-  n_historia:'Ex: "Fundada em 2012 pelo sócio engenheiro. Começamos com reformas e evoluímos para incorporação própria."',
-  n_posicionamento:'Ex: "Médio-alto padrão. Nossos projetos ficam entre R$600k e R$1,8M."',
-  n_diferencial:'Ex: "Prazo de entrega cumprido 100% das vezes e acompanhamento pós-obra incluso."',
-  n_publico:'Ex: "Casais entre 30 e 50 anos, profissionais liberais, renda acima de R$15k, buscando upgrade de qualidade."',
-  n_jornada:'Ex: "Indicação de clientes satisfeitos e visitas ao stand. Ainda sem canal digital consistente."',
-  n_objecoes:'Ex: "Medo de não receber no prazo e desconfiança com empresas menores."',
-  n_concorrentes:'Ex: "Construtora Visão, TCA Engenharia e Grupo Plano na região."',
-  n_vantagem:'Ex: "Entregamos no prazo, temos pós-venda ativo e o sócio acompanha cada obra pessoalmente."',
-  influenciadores:'Ex: "Nunca trabalhamos, mas temos interesse em micro-influenciadores de arquitetura e decoração."'
+ nome_empresa:'Ex: "Construtora Horizonte"',
+ produto_servico:'Ex: "Imóveis residenciais alto padrão"',
+ responsavel:'Ex: "Carlos Mendes"',
+ email:'Ex: "carlos@empresa.com.br"',
+ site:'Ex: "www.suaempresa.com.br"',
+ fase:'Ex: "Estamos em fase de crescimento consolidado, com 12 anos no mercado e expandindo para o litoral norte."',
+ mudancas:'Ex: "Aumentamos o ticket médio em 30% e conquistamos projetos acima de R$1,5M no último ano."',
+ trava:'Ex: "Falta de visibilidade digital ~ nossa presença nas redes não reflete o nível do que entregamos."',
+ resultado_6m:'Ex: "Que o Instagram se torne um canal de autoridade, atraindo clientes de médio-alto padrão."',
+ lancamentos:'Ex: "Lançamento do Residencial Aurora em março ~ 24 unidades na faixa de R$980k."',
+ visao_longo:'Ex: "Ser referência regional em construção de alto padrão, reconhecida em pelo menos 5 cidades."',
+ sonho:'Ex: "Que as pessoas vejam nosso prédio e digam \'isso é Horizonte\' ~ antes de ver qualquer placa."',
+ problemas_redes:'Ex: "Publicações irregulares, fotos sem padrão visual, nenhuma narrativa sobre os projetos."',
+ inspiracoes:'Ex: "@even.br, @casacor, @fendi ~ pela estética premium e peso de marca."',
+ mensagens:'Ex: "1. Entregamos no prazo. 2. Nossa obra é acompanhada de perto. 3. O imóvel valoriza."',
+ tom_voz:'Ex: "Sério, confiável, sofisticado sem ser distante. Fala com segurança, não com exagero."',
+ vantagens:'Ex: "Fotos dos canteiros de obra têm bom engajamento orgânico."',
+ mood:'Ex: "Jazz instrumental moderno ~ sofisticado, cadenciado, com profundidade."',
+ palavras_chave:'Ex: "Solidez, Precisão, Elegância"',
+ agencia_anterior:'Ex: "Não. É a primeira vez que contratamos um serviço de marketing especializado."',
+ equipe:'Ex: "Carlos (sócio) e Renata (gerente de vendas)."',
+ marca_pessoa:'Ex: "Um arquiteto de 45 anos, terno cinza sem gravata, fala pouco mas quando fala é cirúrgico."',
+ sentimento:'Ex: "Confiança. Que vejam nosso perfil e sintam que estão em boas mãos."',
+ marcas_insp:'Ex: "Apple, Rolex, Embraer ~ pela solidez e comunicação que não precisa gritar."',
+ nunca_soar:'Ex: "Barato, improvisado ou genérico. Nunca soar como mais uma empresa de plantão."',
+ n_historia:'Ex: "Fundada em 2012 pelo sócio engenheiro. Começamos com reformas e evoluímos para incorporação própria."',
+ n_posicionamento:'Ex: "Médio-alto padrão. Nossos projetos ficam entre R$600k e R$1,8M."',
+ n_diferencial:'Ex: "Prazo de entrega cumprido 100% das vezes e acompanhamento pós-obra incluso."',
+ n_publico:'Ex: "Casais entre 30 e 50 anos, profissionais liberais, renda acima de R$15k, buscando upgrade de qualidade."',
+ n_jornada:'Ex: "Indicação de clientes satisfeitos e visitas ao stand. Ainda sem canal digital consistente."',
+ n_objecoes:'Ex: "Medo de não receber no prazo e desconfiança com empresas menores."',
+ n_concorrentes:'Ex: "Construtora Visão, TCA Engenharia e Grupo Plano na região."',
+ n_vantagem:'Ex: "Entregamos no prazo, temos pós-venda ativo e o sócio acompanha cada obra pessoalmente."',
+ influenciadores:'Ex: "Nunca trabalhamos, mas temos interesse em micro-influenciadores de arquitetura e decoração."'
 };
 
 // LOGIN
 function fazerLogin(){
-  const s=document.getElementById('senhaInput').value.trim();
-  if(SENHAS[s]){
-    nichoAtual=s;
-    document.getElementById('loginErro').style.display='none';
-    document.getElementById('loginScreen').style.display='none';
-    const fs=document.getElementById('formScreen');
-    fs.style.display='block';
-    document.getElementById('topoNicho').textContent=SENHAS[s];
-    document.getElementById('heroNicho').textContent=SENHAS[s];
-    renderForm();
-    setTimeout(()=>{ fs.classList.add('show'); observarCards(); },50);
-  } else {
-    document.getElementById('loginErro').style.display='block';
-    document.getElementById('senhaInput').style.animation='none';
-    setTimeout(()=>document.getElementById('senhaInput').style.animation='',100);
-  }
+ const s=document.getElementById('senhaInput').value.trim();
+ if(SENHAS[s]){
+ nichoAtual=s;
+ document.getElementById('loginErro').style.display='none';
+ document.getElementById('loginScreen').style.display='none';
+ const fs=document.getElementById('formScreen');
+ fs.style.display='block';
+ document.getElementById('topoNicho').textContent=SENHAS[s];
+ document.getElementById('heroNicho').textContent=SENHAS[s];
+ renderForm();
+ setTimeout(()=>{ fs.classList.add('show'); observarCards(); },50);
+ } else {
+ document.getElementById('loginErro').style.display='block';
+ document.getElementById('senhaInput').style.animation='none';
+ setTimeout(()=>document.getElementById('senhaInput').style.animation='',100);
+ }
 }
 document.getElementById('senhaInput').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
 
 // SCROLL REVEAL
 function observarCards(){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
-  },{threshold:.08});
-  document.querySelectorAll('.card').forEach(c=>obs.observe(c));
+ const obs=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+ },{threshold:.08});
+ document.querySelectorAll('.card').forEach(c=>obs.observe(c));
 }
 
 // ESTRUTURA
 const B={
-  b1:{titulo:'1 — Informações Básicas',campos:[
-    {id:'nome_empresa',label:'Nome da empresa / marca',tipo:'text'},
-    {id:'produto_servico',label:'Produto ou serviço principal',tipo:'text'},
-    {id:'responsavel',label:'Responsável pela aprovação de conteúdo',tipo:'text'},
-    {id:'email',label:'E-mail do responsável',tipo:'email'},
-    {id:'aniversarios',label:'Data de aniversário do(s) responsável(is)',tipo:'aniversario'},
-    {id:'site',label:'Site',tipo:'text',opt:true}
-  ]},
-  b2:{titulo:'2 — Alinhamento de Escopo',campos:[
-    {id:'esc1',label:'O serviço contratado é gestão de conteúdo e não inclui tráfego pago, salvo se contratado separadamente.',tipo:'radio',opcoes:['Entendi e concordo','Tenho dúvidas sobre isso'],obs:true},
-    {id:'esc3',label:'A autonomia criativa (estética, formato, linguagem) é do Studio Pulga, dentro do alinhado.',tipo:'radio',opcoes:['Entendi e concordo','Quero conversar sobre isso'],obs:true},
-    {id:'esc4',label:'Me comprometo a dar retorno de aprovação em até 48h pelo canal oficial.',tipo:'radio',opcoes:['Me comprometo','Preciso alinhar internamente'],obs:true}
-  ]},
-  b3:{titulo:'3 — Momento Atual & Visão',campos:[
-    {id:'fase',label:'Em que fase a empresa está hoje?',tipo:'textarea'},
-    {id:'mudancas',label:'O que mudou nos últimos 12 meses?',tipo:'textarea'},
-    {id:'trava',label:'O que trava o crescimento hoje?',tipo:'textarea'},
-    {id:'resultado_6m',label:'Qual resultado você espera do marketing nos próximos 6 a 12 meses?',tipo:'textarea'},
-    {id:'lancamentos',label:'Há lançamentos ou mudanças programadas nesse período?',tipo:'textarea'},
-    {id:'visao_longo',label:'Onde a marca quer estar em 3 a 5 anos?',tipo:'textarea'},
-    {id:'sonho',label:'O que você nunca falou em voz alta sobre o sonho dessa marca? 🤫',tipo:'textarea'}
-  ]},
-  b5:{titulo:'5 — Diagnóstico Atual',campos:[
-    {id:'problemas_redes',label:'Quais os principais problemas que você percebe nas redes hoje?',tipo:'textarea'},
-    {id:'inspiracoes',label:'Que perfis ou marcas te inspiram? (pode ser de fora do nicho)',tipo:'textarea'},
-    {id:'mensagens',label:'Quais as 3 mensagens mais importantes que sua marca precisa comunicar?',tipo:'textarea'},
-    {id:'tom_voz',label:'Como você descreveria o tom de voz ideal da marca?',tipo:'textarea'},
-    {id:'vantagens',label:'O que já funciona bem hoje na comunicação?',tipo:'textarea'},
-    {id:'insights_file',label:'Prints do Instagram Insights — últimos 30 dias (até 4 imagens)',tipo:'file'}
-  ]},
-  b6:{titulo:'6 — Visual & Informações Adicionais',campos:[
-    {id:'identidade',label:'Já tem identidade visual definida?',tipo:'radio',opcoes:['Sim, completa','Parcialmente','Não tenho'],obs:true},
-    {id:'influenciadores',label:'Já trabalhou ou tem interesse em trabalhar com influenciadores?',tipo:'textarea'},
-    {id:'seguidores',label:'Como você avalia a qualidade da sua base de seguidores?',tipo:'radio',opcoes:['Muito engajada','Engajamento médio','Pouco engajamento','Não sei avaliar'],obs:true},
-    {id:'mood',label:'Se sua marca fosse uma playlist, que estilo musical representaria?',tipo:'textarea'},
-    {id:'palavras_chave',label:'3 palavras que definem sua marca',tipo:'text'},
-    {id:'agencia_anterior',label:'Já trabalhou com agência antes? Como foi?',tipo:'textarea'},
-    {id:'equipe',label:'Quem da equipe pode aparecer nos conteúdos / gravar?',tipo:'textarea'}
-  ]},
-  b7:{titulo:'7 — Personalidade da Marca',campos:[
-    {id:'marca_pessoa',label:'Se sua marca fosse uma pessoa, como ela seria? Descreva o jeito de ser, de falar, de se vestir.',tipo:'textarea'},
-    {id:'sentimento',label:'Que sentimento você quer que as pessoas tenham quando veem seu conteúdo?',tipo:'textarea'},
-    {id:'marcas_insp',label:'Quais 3 marcas de FORA do seu nicho inspiram sua forma de comunicar?',tipo:'textarea'},
-    {id:'nunca_soar',label:'O que a comunicação da sua marca NUNCA pode soar?',tipo:'textarea'}
-  ]}
+ b1:{titulo:'1 ~ Informações Básicas',campos:[
+ {id:'nome_empresa',label:'Nome da empresa / marca',tipo:'text'},
+ {id:'produto_servico',label:'Produto ou serviço principal',tipo:'text'},
+ {id:'responsavel',label:'Responsável pela aprovação de conteúdo',tipo:'text'},
+ {id:'email',label:'E-mail do responsável',tipo:'email'},
+ {id:'aniversarios',label:'Data de aniversário do(s) responsável(is)',tipo:'aniversario'},
+ {id:'site',label:'Site',tipo:'text',opt:true}
+ ]},
+ b2:{titulo:'2 ~ Alinhamento de Escopo',campos:[
+ {id:'esc1',label:'O serviço contratado é gestão de conteúdo e não inclui tráfego pago, salvo se contratado separadamente.',tipo:'radio',opcoes:['Entendi e concordo','Tenho dúvidas sobre isso'],obs:true},
+ {id:'esc3',label:'A autonomia criativa (estética, formato, linguagem) é do Studio Pulga, dentro do alinhado.',tipo:'radio',opcoes:['Entendi e concordo','Quero conversar sobre isso'],obs:true},
+ {id:'esc4',label:'Me comprometo a dar retorno de aprovação em até 48h pelo canal oficial.',tipo:'radio',opcoes:['Me comprometo','Preciso alinhar internamente'],obs:true}
+ ]},
+ b3:{titulo:'3 ~ Momento Atual & Visão',campos:[
+ {id:'fase',label:'Em que fase a empresa está hoje?',tipo:'textarea'},
+ {id:'mudancas',label:'O que mudou nos últimos 12 meses?',tipo:'textarea'},
+ {id:'trava',label:'O que trava o crescimento hoje?',tipo:'textarea'},
+ {id:'resultado_6m',label:'Qual resultado você espera do marketing nos próximos 6 a 12 meses?',tipo:'textarea'},
+ {id:'lancamentos',label:'Há lançamentos ou mudanças programadas nesse período?',tipo:'textarea'},
+ {id:'visao_longo',label:'Onde a marca quer estar em 3 a 5 anos?',tipo:'textarea'},
+ {id:'sonho',label:'O que você nunca falou em voz alta sobre o sonho dessa marca? ',tipo:'textarea'}
+ ]},
+ b5:{titulo:'5 ~ Diagnóstico Atual',campos:[
+ {id:'problemas_redes',label:'Quais os principais problemas que você percebe nas redes hoje?',tipo:'textarea'},
+ {id:'inspiracoes',label:'Que perfis ou marcas te inspiram? (pode ser de fora do nicho)',tipo:'textarea'},
+ {id:'mensagens',label:'Quais as 3 mensagens mais importantes que sua marca precisa comunicar?',tipo:'textarea'},
+ {id:'tom_voz',label:'Como você descreveria o tom de voz ideal da marca?',tipo:'textarea'},
+ {id:'vantagens',label:'O que já funciona bem hoje na comunicação?',tipo:'textarea'},
+ {id:'insights_file',label:'Prints do Instagram Insights ~ últimos 30 dias (até 4 imagens)',tipo:'file'}
+ ]},
+ b6:{titulo:'6 ~ Visual & Informações Adicionais',campos:[
+ {id:'identidade',label:'Já tem identidade visual definida?',tipo:'radio',opcoes:['Sim, completa','Parcialmente','Não tenho'],obs:true},
+ {id:'influenciadores',label:'Já trabalhou ou tem interesse em trabalhar com influenciadores?',tipo:'textarea'},
+ {id:'seguidores',label:'Como você avalia a qualidade da sua base de seguidores?',tipo:'radio',opcoes:['Muito engajada','Engajamento médio','Pouco engajamento','Não sei avaliar'],obs:true},
+ {id:'mood',label:'Se sua marca fosse uma playlist, que estilo musical representaria?',tipo:'textarea'},
+ {id:'palavras_chave',label:'3 palavras que definem sua marca',tipo:'text'},
+ {id:'agencia_anterior',label:'Já trabalhou com agência antes? Como foi?',tipo:'textarea'},
+ {id:'equipe',label:'Quem da equipe pode aparecer nos conteúdos / gravar?',tipo:'textarea'}
+ ]},
+ b7:{titulo:'7 ~ Personalidade da Marca',campos:[
+ {id:'marca_pessoa',label:'Se sua marca fosse uma pessoa, como ela seria? Descreva o jeito de ser, de falar, de se vestir.',tipo:'textarea'},
+ {id:'sentimento',label:'Que sentimento você quer que as pessoas tenham quando veem seu conteúdo?',tipo:'textarea'},
+ {id:'marcas_insp',label:'Quais 3 marcas de FORA do seu nicho inspiram sua forma de comunicar?',tipo:'textarea'},
+ {id:'nunca_soar',label:'O que a comunicação da sua marca NUNCA pode soar?',tipo:'textarea'}
+ ]}
 };
 
 const NICHOS={
-  'Construtora00':{label:'Construtora',secoes:[
-    {titulo:'História & Posicionamento',campos:[
-      {id:'n_historia',label:'Como a construtora surgiu? 🏗️',tipo:'textarea'},
-      {id:'n_posicionamento',label:'Como você posiciona a construtora hoje?',tipo:'textarea'},
-      {id:'n_diferencial',label:'O que diferencia vocês de outras construtoras da região?',tipo:'textarea'}
-    ]},
-    {titulo:'Produto & Entrega',campos:[
-      {id:'n_tipo_obra',label:'Que tipo de obra vocês entregam?',tipo:'text'},
-      {id:'n_ticket',label:'Qual o ticket médio de um imóvel?',tipo:'text'},
-      {id:'n_prazo',label:'Qual o prazo médio de entrega de uma obra?',tipo:'text'},
-      {id:'n_diferenciais',label:'Quais diferenciais vocês entregam no produto final?',tipo:'textarea'}
-    ]},
-    {titulo:'Público-Alvo & Jornada',campos:[
-      {id:'n_publico',label:'Quem é o comprador ideal? Perfil, faixa etária, renda, motivação.',tipo:'textarea'},
-      {id:'n_jornada',label:'Como esse comprador chega até vocês hoje?',tipo:'textarea'},
-      {id:'n_objecoes',label:'Quais as principais objeções que vocês enfrentam na venda?',tipo:'textarea'}
-    ]},
-    {titulo:'Concorrência',campos:[
-      {id:'n_concorrentes',label:'Quem são os principais concorrentes na região?',tipo:'textarea'},
-      {id:'n_vantagem',label:'O que vocês fazem melhor do que eles?',tipo:'textarea'}
-    ]}
-  ]},
-  'Planejados01':{label:'Loja de Planejados',secoes:[
-    {titulo:'História & Posicionamento',campos:[
-      {id:'n_historia',label:'Como a loja surgiu? O que motivou entrar nesse mercado? 🪵',tipo:'textarea'},
-      {id:'n_posicionamento',label:'Como você posiciona a loja hoje?',tipo:'textarea'},
-      {id:'n_diferencial',label:'O que diferencia a loja de concorrentes da região?',tipo:'textarea'}
-    ]},
-    {titulo:'Produto & Diferencial',campos:[
-      {id:'n_linhas',label:'Quais linhas e materiais vocês trabalham?',tipo:'textarea'},
-      {id:'n_ticket',label:'Qual o ticket médio de um projeto completo?',tipo:'text'},
-      {id:'n_prazo',label:'Qual o prazo médio de entrega e instalação?',tipo:'text'},
-      {id:'n_fabrica',label:'Vocês fabricam ou revendem? Têm fábrica própria?',tipo:'text'}
-    ]},
-    {titulo:'Público-Alvo & Jornada',campos:[
-      {id:'n_publico',label:'Quem é o cliente ideal?',tipo:'textarea'},
-      {id:'n_jornada',label:'Como o cliente chega até vocês?',tipo:'textarea'},
-      {id:'n_objecoes',label:'Quais as principais objeções na hora de fechar?',tipo:'textarea'}
-    ]},
-    {titulo:'Relação com Arquitetos',campos:[
-      {id:'n_arq_relacao',label:'Vocês já trabalham com arquitetos? Como é essa relação hoje?',tipo:'textarea'},
-      {id:'n_arq_programa',label:'Têm programa de benefícios ou parceria formal com arquitetos?',tipo:'textarea'},
-      {id:'n_arq_qtd',label:'Quantos projetos por mês vêm indicados por arquitetos?',tipo:'text'}
-    ]},
-    {titulo:'Concorrência',campos:[
-      {id:'n_concorrentes',label:'Quem são os principais concorrentes na região?',tipo:'textarea'},
-      {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
-    ]}
-  ]},
-  'Construcao02':{label:'Loja de Revestimento',secoes:[
-    {titulo:'História & Posicionamento',campos:[
-      {id:'n_historia',label:'Como a loja surgiu? O que te trouxe para esse mercado? 🪨',tipo:'textarea'},
-      {id:'n_posicionamento',label:'Como você posiciona a loja?',tipo:'textarea'},
-      {id:'n_diferencial',label:'O que diferencia vocês de outras lojas de revestimento?',tipo:'textarea'}
-    ]},
-    {titulo:'Produto & Diferencial',campos:[
-      {id:'n_categorias',label:'Quais categorias de produto vocês trabalham?',tipo:'textarea'},
-      {id:'n_marcas',label:'Quais marcas ou fornecedores principais?',tipo:'textarea'},
-      {id:'n_ticket',label:'Qual o ticket médio de uma venda?',tipo:'text'},
-      {id:'n_exclusivo',label:'Têm algum produto exclusivo ou linha diferenciada?',tipo:'textarea'}
-    ]},
-    {titulo:'Público-Alvo & Jornada',campos:[
-      {id:'n_publico',label:'Quem compra mais hoje?',tipo:'textarea'},
-      {id:'n_jornada',label:'Como o cliente chega até a loja?',tipo:'textarea'},
-      {id:'n_objecoes',label:'Quais as principais objeções na venda?',tipo:'textarea'}
-    ]},
-    {titulo:'Relação com Arquitetos',campos:[
-      {id:'n_arq_relacao',label:'Como é a relação com arquitetos hoje?',tipo:'textarea'},
-      {id:'n_arq_programa',label:'Têm algum programa de parceria ou benefícios para arquitetos?',tipo:'textarea'}
-    ]},
-    {titulo:'Concorrência',campos:[
-      {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
-      {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
-    ]}
-  ]},
-  'Arq03':{label:'Arquiteto(a)',secoes:[
-    {titulo:'História & Posicionamento',campos:[
-      {id:'n_historia',label:'Como seu escritório surgiu? O que te levou a ser arquiteto(a)? ✏️',tipo:'textarea'},
-      {id:'n_posicionamento',label:'Como você se posiciona no mercado hoje?',tipo:'textarea'},
-      {id:'n_diferencial',label:'O que diferencia seu trabalho de outros arquitetos?',tipo:'textarea'},
-      {id:'n_estilo',label:'Como você descreveria seu estilo arquitetônico / de interiores?',tipo:'textarea'}
-    ]},
-    {titulo:'Serviço & Entrega',campos:[
-      {id:'n_servicos',label:'Quais serviços você oferece?',tipo:'textarea'},
-      {id:'n_ticket',label:'Qual o ticket médio de um projeto?',tipo:'text'},
-      {id:'n_prazo',label:'Qual o prazo médio de um projeto completo?',tipo:'text'},
-      {id:'n_area',label:'Qual a metragem média dos projetos que você atende?',tipo:'text'}
-    ]},
-    {titulo:'Público-Alvo & Jornada',campos:[
-      {id:'n_publico',label:'Quem é o cliente ideal?',tipo:'textarea'},
-      {id:'n_jornada',label:'Como os clientes chegam até você hoje?',tipo:'textarea'},
-      {id:'n_objecoes',label:'Quais as principais objeções para fechar um projeto?',tipo:'textarea'}
-    ]},
-    {titulo:'Concorrência',campos:[
-      {id:'n_concorrentes',label:'Quem você enxerga como referência ou concorrente no mercado local?',tipo:'textarea'},
-      {id:'n_vantagem',label:'O que você faz melhor ou diferente deles?',tipo:'textarea'}
-    ]}
-  ]},
-  'Eng04':{label:'Engenharia',secoes:[
-    {titulo:'História & Posicionamento',campos:[
-      {id:'n_historia',label:'Como o escritório/empresa surgiu? 📐',tipo:'textarea'},
-      {id:'n_posicionamento',label:'Como vocês se posicionam no mercado?',tipo:'textarea'},
-      {id:'n_diferencial',label:'O que diferencia vocês de outros escritórios de engenharia?',tipo:'textarea'}
-    ]},
-    {titulo:'Serviço & Entrega',campos:[
-      {id:'n_servicos',label:'Quais serviços vocês oferecem?',tipo:'textarea'},
-      {id:'n_ticket',label:'Qual o ticket médio de um projeto ou contrato?',tipo:'text'},
-      {id:'n_prazo',label:'Qual o prazo médio de entrega?',tipo:'text'},
-      {id:'n_especialidade',label:'Têm alguma especialidade técnica que se destaca?',tipo:'textarea'}
-    ]},
-    {titulo:'Público-Alvo & Jornada',campos:[
-      {id:'n_publico',label:'Quem contrata vocês?',tipo:'textarea'},
-      {id:'n_jornada',label:'Como os clientes chegam até vocês hoje?',tipo:'textarea'},
-      {id:'n_objecoes',label:'Quais as principais objeções na hora de fechar?',tipo:'textarea'}
-    ]},
-    {titulo:'Concorrência',campos:[
-      {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
-      {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
-    ]}
-  ]}
+ 'Construtora00':{label:'Construtora',secoes:[
+ {titulo:'História & Posicionamento',campos:[
+ {id:'n_historia',label:'Como a construtora surgiu? ',tipo:'textarea'},
+ {id:'n_posicionamento',label:'Como você posiciona a construtora hoje?',tipo:'textarea'},
+ {id:'n_diferencial',label:'O que diferencia vocês de outras construtoras da região?',tipo:'textarea'}
+ ]},
+ {titulo:'Produto & Entrega',campos:[
+ {id:'n_tipo_obra',label:'Que tipo de obra vocês entregam?',tipo:'text'},
+ {id:'n_ticket',label:'Qual o ticket médio de um imóvel?',tipo:'text'},
+ {id:'n_prazo',label:'Qual o prazo médio de entrega de uma obra?',tipo:'text'},
+ {id:'n_diferenciais',label:'Quais diferenciais vocês entregam no produto final?',tipo:'textarea'}
+ ]},
+ {titulo:'Público-Alvo & Jornada',campos:[
+ {id:'n_publico',label:'Quem é o comprador ideal? Perfil, faixa etária, renda, motivação.',tipo:'textarea'},
+ {id:'n_jornada',label:'Como esse comprador chega até vocês hoje?',tipo:'textarea'},
+ {id:'n_objecoes',label:'Quais as principais objeções que vocês enfrentam na venda?',tipo:'textarea'}
+ ]},
+ {titulo:'Concorrência',campos:[
+ {id:'n_concorrentes',label:'Quem são os principais concorrentes na região?',tipo:'textarea'},
+ {id:'n_vantagem',label:'O que vocês fazem melhor do que eles?',tipo:'textarea'}
+ ]}
+ ]},
+ 'Planejados01':{label:'Loja de Planejados',secoes:[
+ {titulo:'História & Posicionamento',campos:[
+ {id:'n_historia',label:'Como a loja surgiu? O que motivou entrar nesse mercado? ',tipo:'textarea'},
+ {id:'n_posicionamento',label:'Como você posiciona a loja hoje?',tipo:'textarea'},
+ {id:'n_diferencial',label:'O que diferencia a loja de concorrentes da região?',tipo:'textarea'}
+ ]},
+ {titulo:'Produto & Diferencial',campos:[
+ {id:'n_linhas',label:'Quais linhas e materiais vocês trabalham?',tipo:'textarea'},
+ {id:'n_ticket',label:'Qual o ticket médio de um projeto completo?',tipo:'text'},
+ {id:'n_prazo',label:'Qual o prazo médio de entrega e instalação?',tipo:'text'},
+ {id:'n_fabrica',label:'Vocês fabricam ou revendem? Têm fábrica própria?',tipo:'text'}
+ ]},
+ {titulo:'Público-Alvo & Jornada',campos:[
+ {id:'n_publico',label:'Quem é o cliente ideal?',tipo:'textarea'},
+ {id:'n_jornada',label:'Como o cliente chega até vocês?',tipo:'textarea'},
+ {id:'n_objecoes',label:'Quais as principais objeções na hora de fechar?',tipo:'textarea'}
+ ]},
+ {titulo:'Relação com Arquitetos',campos:[
+ {id:'n_arq_relacao',label:'Vocês já trabalham com arquitetos? Como é essa relação hoje?',tipo:'textarea'},
+ {id:'n_arq_programa',label:'Têm programa de benefícios ou parceria formal com arquitetos?',tipo:'textarea'},
+ {id:'n_arq_qtd',label:'Quantos projetos por mês vêm indicados por arquitetos?',tipo:'text'}
+ ]},
+ {titulo:'Concorrência',campos:[
+ {id:'n_concorrentes',label:'Quem são os principais concorrentes na região?',tipo:'textarea'},
+ {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+ ]}
+ ]},
+ 'Construcao02':{label:'Loja de Revestimento',secoes:[
+ {titulo:'História & Posicionamento',campos:[
+ {id:'n_historia',label:'Como a loja surgiu? O que te trouxe para esse mercado? ',tipo:'textarea'},
+ {id:'n_posicionamento',label:'Como você posiciona a loja?',tipo:'textarea'},
+ {id:'n_diferencial',label:'O que diferencia vocês de outras lojas de revestimento?',tipo:'textarea'}
+ ]},
+ {titulo:'Produto & Diferencial',campos:[
+ {id:'n_categorias',label:'Quais categorias de produto vocês trabalham?',tipo:'textarea'},
+ {id:'n_marcas',label:'Quais marcas ou fornecedores principais?',tipo:'textarea'},
+ {id:'n_ticket',label:'Qual o ticket médio de uma venda?',tipo:'text'},
+ {id:'n_exclusivo',label:'Têm algum produto exclusivo ou linha diferenciada?',tipo:'textarea'}
+ ]},
+ {titulo:'Público-Alvo & Jornada',campos:[
+ {id:'n_publico',label:'Quem compra mais hoje?',tipo:'textarea'},
+ {id:'n_jornada',label:'Como o cliente chega até a loja?',tipo:'textarea'},
+ {id:'n_objecoes',label:'Quais as principais objeções na venda?',tipo:'textarea'}
+ ]},
+ {titulo:'Relação com Arquitetos',campos:[
+ {id:'n_arq_relacao',label:'Como é a relação com arquitetos hoje?',tipo:'textarea'},
+ {id:'n_arq_programa',label:'Têm algum programa de parceria ou benefícios para arquitetos?',tipo:'textarea'}
+ ]},
+ {titulo:'Concorrência',campos:[
+ {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
+ {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+ ]}
+ ]},
+ 'Arq03':{label:'Arquiteto(a)',secoes:[
+ {titulo:'História & Posicionamento',campos:[
+ {id:'n_historia',label:'Como seu escritório surgiu? O que te levou a ser arquiteto(a)? ',tipo:'textarea'},
+ {id:'n_posicionamento',label:'Como você se posiciona no mercado hoje?',tipo:'textarea'},
+ {id:'n_diferencial',label:'O que diferencia seu trabalho de outros arquitetos?',tipo:'textarea'},
+ {id:'n_estilo',label:'Como você descreveria seu estilo arquitetônico / de interiores?',tipo:'textarea'}
+ ]},
+ {titulo:'Serviço & Entrega',campos:[
+ {id:'n_servicos',label:'Quais serviços você oferece?',tipo:'textarea'},
+ {id:'n_ticket',label:'Qual o ticket médio de um projeto?',tipo:'text'},
+ {id:'n_prazo',label:'Qual o prazo médio de um projeto completo?',tipo:'text'},
+ {id:'n_area',label:'Qual a metragem média dos projetos que você atende?',tipo:'text'}
+ ]},
+ {titulo:'Público-Alvo & Jornada',campos:[
+ {id:'n_publico',label:'Quem é o cliente ideal?',tipo:'textarea'},
+ {id:'n_jornada',label:'Como os clientes chegam até você hoje?',tipo:'textarea'},
+ {id:'n_objecoes',label:'Quais as principais objeções para fechar um projeto?',tipo:'textarea'}
+ ]},
+ {titulo:'Concorrência',campos:[
+ {id:'n_concorrentes',label:'Quem você enxerga como referência ou concorrente no mercado local?',tipo:'textarea'},
+ {id:'n_vantagem',label:'O que você faz melhor ou diferente deles?',tipo:'textarea'}
+ ]}
+ ]},
+ 'Eng04':{label:'Engenharia',secoes:[
+ {titulo:'História & Posicionamento',campos:[
+ {id:'n_historia',label:'Como o escritório/empresa surgiu? ',tipo:'textarea'},
+ {id:'n_posicionamento',label:'Como vocês se posicionam no mercado?',tipo:'textarea'},
+ {id:'n_diferencial',label:'O que diferencia vocês de outros escritórios de engenharia?',tipo:'textarea'}
+ ]},
+ {titulo:'Serviço & Entrega',campos:[
+ {id:'n_servicos',label:'Quais serviços vocês oferecem?',tipo:'textarea'},
+ {id:'n_ticket',label:'Qual o ticket médio de um projeto ou contrato?',tipo:'text'},
+ {id:'n_prazo',label:'Qual o prazo médio de entrega?',tipo:'text'},
+ {id:'n_especialidade',label:'Têm alguma especialidade técnica que se destaca?',tipo:'textarea'}
+ ]},
+ {titulo:'Público-Alvo & Jornada',campos:[
+ {id:'n_publico',label:'Quem contrata vocês?',tipo:'textarea'},
+ {id:'n_jornada',label:'Como os clientes chegam até vocês hoje?',tipo:'textarea'},
+ {id:'n_objecoes',label:'Quais as principais objeções na hora de fechar?',tipo:'textarea'}
+ ]},
+ {titulo:'Concorrência',campos:[
+ {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
+ {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+ ]}
+ ]}
 };
 
 // RENDER
 function renderForm(){
-  const nicho=NICHOS[nichoAtual];
-  let html='';
-  ['b1','b2','b3'].forEach(k=>{
-    const b=B[k];
-    html+=`<div class="card"><div class="card-title">${b.titulo}</div>`;
-    html+=renderCampos(b.campos);
-    html+=`</div>`;
-  });
-  html+=`<div class="card"><div class="card-title">4 — Sobre o Negócio</div>`;
-  nicho.secoes.forEach(s=>{
-    html+=`<div class="secao-titulo">${s.titulo}</div>`;
-    html+=renderCampos(s.campos);
-  });
-  html+=`</div>`;
-  ['b5','b6','b7'].forEach(k=>{
-    const b=B[k];
-    html+=`<div class="card"><div class="card-title">${b.titulo}</div>`;
-    html+=renderCampos(b.campos);
-    html+=`</div>`;
-  });
-  document.getElementById('formConteudo').innerHTML=html;
-  bindEventos();
+ const nicho=NICHOS[nichoAtual];
+ let html='';
+ ['b1','b2','b3'].forEach(k=>{
+ const b=B[k];
+ html+=`<div class="card"><div class="card-title">${b.titulo}</div>`;
+ html+=renderCampos(b.campos);
+ html+=`</div>`;
+ });
+ html+=`<div class="card"><div class="card-title">4 ~ Sobre o Negócio</div>`;
+ nicho.secoes.forEach(s=>{
+ html+=`<div class="secao-titulo">${s.titulo}</div>`;
+ html+=renderCampos(s.campos);
+ });
+ html+=`</div>`;
+ ['b5','b6','b7'].forEach(k=>{
+ const b=B[k];
+ html+=`<div class="card"><div class="card-title">${b.titulo}</div>`;
+ html+=renderCampos(b.campos);
+ html+=`</div>`;
+ });
+ document.getElementById('formConteudo').innerHTML=html;
+ bindEventos();
 }
 
 function tooltip(id){
-  const ex=EXEMPLOS[id];
-  if(!ex) return '';
-  const txt=ex.length>120?ex.slice(0,117)+'…':ex;
-  return `<div class="tooltip-wrap">
-    <div class="tooltip-btn" onmouseenter="showTip(this)" onmouseleave="hideTip(this)" ontouchstart="toggleTip(this)">?</div>
-    <div class="tooltip-box"><strong>Exemplo de resposta</strong>${txt}</div>
-  </div>`;
+ const ex=EXEMPLOS[id];
+ if(!ex) return '';
+ const txt=ex.length>120?ex.slice(0,117)+'…':ex;
+ return `<div class="tooltip-wrap">
+ <div class="tooltip-btn" onmouseenter="showTip(this)" onmouseleave="hideTip(this)" ontouchstart="toggleTip(this)">?</div>
+ <div class="tooltip-box"><strong>Exemplo de resposta</strong>${txt}</div>
+ </div>`;
 }
 
 function showTip(btn){btn.nextElementSibling.classList.add('show');}
@@ -495,280 +560,283 @@ function hideTip(btn){btn.nextElementSibling.classList.remove('show');}
 function toggleTip(btn){btn.nextElementSibling.classList.toggle('show');}
 
 function renderCampos(campos){
-  let html='';
-  campos.forEach(c=>{
-    html+=`<div class="field">`;
-    if(c.tipo==='aniversario'){
-      html+=`<div class="field-header"><div class="field-label">${c.label}</div></div>`;
-      html+=renderAniversario();
-    } else if(c.tipo==='file'){
-      html+=`<div class="field-header"><div class="field-label">${c.label}</div></div>`;
-      html+=renderFileUpload();
-    } else {
-      html+=`<div class="field-header"><div class="field-label">${c.label}${c.opt?' <span class="opt">(opcional)</span>':''}</div>${tooltip(c.id)}</div>`;
-      if(c.tipo==='text'||c.tipo==='email'){
-        html+=`<input type="${c.tipo}" id="${c.id}" name="${c.id}">`;
-      } else if(c.tipo==='textarea'){
-        html+=`<textarea id="${c.id}" name="${c.id}" rows="3"></textarea>`;
-      } else if(c.tipo==='radio'){
-        html+=`<div class="radios">`;
-        c.opcoes.forEach((op,i)=>{
-          html+=`<div class="radio-opt"><input type="radio" name="${c.id}" value="${op}" id="${c.id}_${i}"><label class="radio-opt-label" for="${c.id}_${i}">${op}</label></div>`;
-        });
-        html+=`</div>`;
-        if(c.obs){
-          html+=`<div class="obs-field"><div class="obs-label">Observação (opcional)</div><textarea placeholder="Quer acrescentar algo?" rows="2"></textarea></div>`;
-        }
-      }
-    }
-    html+=`</div>`;
-  });
-  return html;
+ let html='';
+ campos.forEach(c=>{
+ html+=`<div class="field">`;
+ if(c.tipo==='aniversario'){
+ html+=`<div class="field-header"><div class="field-label">${c.label}</div></div>`;
+ html+=renderAniversario();
+ } else if(c.tipo==='file'){
+ html+=`<div class="field-header"><div class="field-label">${c.label}</div></div>`;
+ html+=renderFileUpload();
+ } else {
+ html+=`<div class="field-header"><div class="field-label">${c.label}${c.opt?' <span class="opt">(opcional)</span>':''}</div>${tooltip(c.id)}</div>`;
+ if(c.tipo==='text'||c.tipo==='email'){
+ html+=`<input type="${c.tipo}" id="${c.id}" name="${c.id}">`;
+ } else if(c.tipo==='textarea'){
+ html+=`<textarea id="${c.id}" name="${c.id}" rows="3"></textarea>`;
+ } else if(c.tipo==='radio'){
+ html+=`<div class="radios">`;
+ c.opcoes.forEach((op,i)=>{
+ html+=`<div class="radio-opt"><input type="radio" name="${c.id}" value="${op}" id="${c.id}_${i}"><label class="radio-opt-label" for="${c.id}_${i}">${op}</label></div>`;
+ });
+ html+=`</div>`;
+ if(c.obs){
+ html+=`<div class="obs-field"><div class="obs-label">Observação (opcional)</div><textarea placeholder="Quer acrescentar algo?" rows="2"></textarea></div>`;
+ }
+ }
+ }
+ html+=`</div>`;
+ });
+ return html;
 }
 
 function renderAniversario(){
-  return `<div class="aniv-lista" id="anivLista">
-    <div class="aniv-row">
-      <input type="text" placeholder="Nome do responsável" class="aniv-nome">
-      <input type="text" placeholder="DD/MM" class="aniv-data">
-      <div></div>
-    </div>
-    <div class="aniv-nao-sei">
-      <input type="checkbox" id="anivNaoSei_0" onchange="toggleAnivNaoSei(this,0)">
-      <label for="anivNaoSei_0">Não sei a data</label>
-    </div>
-  </div>
-  <button type="button" class="btn-add-aniv" onclick="addAniversario()">+ Adicionar outro responsável</button>`;
+ return `<div class="aniv-lista" id="anivLista">
+ <div class="aniv-row">
+ <input type="text" placeholder="Nome do responsável" class="aniv-nome">
+ <input type="text" placeholder="DD/MM" class="aniv-data">
+ <div></div>
+ </div>
+ <div class="aniv-nao-sei">
+ <input type="checkbox" id="anivNaoSei_0" onchange="toggleAnivNaoSei(this,0)">
+ <label for="anivNaoSei_0">Não sei a data</label>
+ </div>
+ </div>
+ <button type="button" class="btn-add-aniv" onclick="addAniversario()">+ Adicionar outro responsável</button>`;
 }
 
 function addAniversario(){
-  const lista=document.getElementById('anivLista');
-  const idx=lista.querySelectorAll('.aniv-row').length;
-  const row=document.createElement('div');
-  row.innerHTML=`<div class="aniv-row">
-    <input type="text" placeholder="Nome do responsável" class="aniv-nome">
-    <input type="text" placeholder="DD/MM" class="aniv-data">
-    <button type="button" class="btn-rem-aniv" onclick="this.closest('.aniv-row').nextElementSibling.remove();this.closest('.aniv-row').remove();atualizarProgresso();">×</button>
-  </div>
-  <div class="aniv-nao-sei">
-    <input type="checkbox" id="anivNaoSei_${idx}" onchange="toggleAnivNaoSei(this,${idx})">
-    <label for="anivNaoSei_${idx}">Não sei a data</label>
-  </div>`;
-  lista.appendChild(row.children[0]);
-  lista.appendChild(row.children[0]);
-  atualizarProgresso();
+ const lista=document.getElementById('anivLista');
+ const idx=lista.querySelectorAll('.aniv-row').length;
+ const row=document.createElement('div');
+ row.innerHTML=`<div class="aniv-row">
+ <input type="text" placeholder="Nome do responsável" class="aniv-nome">
+ <input type="text" placeholder="DD/MM" class="aniv-data">
+ <button type="button" class="btn-rem-aniv" onclick="this.closest('.aniv-row').nextElementSibling.remove();this.closest('.aniv-row').remove();atualizarProgresso();">×</button>
+ </div>
+ <div class="aniv-nao-sei">
+ <input type="checkbox" id="anivNaoSei_${idx}" onchange="toggleAnivNaoSei(this,${idx})">
+ <label for="anivNaoSei_${idx}">Não sei a data</label>
+ </div>`;
+ lista.appendChild(row.children[0]);
+ lista.appendChild(row.children[0]);
+ atualizarProgresso();
 }
 
 function toggleAnivNaoSei(cb,idx){
-  const row=cb.closest('.aniv-nao-sei').previousElementSibling;
-  const dataInput=row.querySelector('.aniv-data');
-  if(cb.checked){dataInput.value='Não informado';dataInput.disabled=true;}
-  else{dataInput.value='';dataInput.disabled=false;}
+ const row=cb.closest('.aniv-nao-sei').previousElementSibling;
+ const dataInput=row.querySelector('.aniv-data');
+ if(cb.checked){dataInput.value='Não informado';dataInput.disabled=true;}
+ else{dataInput.value='';dataInput.disabled=false;}
 }
 
 function renderFileUpload(){
-  return `<div class="file-area" id="fileArea" onclick="document.getElementById('fileInput').click()" 
-    ondragover="ev(event);this.classList.add('drag')" 
-    ondragleave="this.classList.remove('drag')" 
-    ondrop="dropFile(event)">
-    <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf" multiple style="display:none" onchange="addFiles(this.files)">
-    <div class="file-area-icon">🖼️</div>
-    <div class="file-area-txt"><strong>Clique ou arraste</strong> para adicionar imagens</div>
-    <div class="file-area-sub">Até 4 imagens • Máx. ${MAX_MB}MB cada • JPG, PNG, PDF</div>
-  </div>
-  <div class="file-lista" id="fileLista"></div>
-  <div class="file-aviso" id="fileAviso"></div>`;
+ return `<div class="file-area" id="fileArea" onclick="document.getElementById('fileInput').click()" 
+ ondragover="ev(event);this.classList.add('drag')" 
+ ondragleave="this.classList.remove('drag')" 
+ ondrop="dropFile(event)">
+ <input type="file" id="fileInput" class="file-input" accept="image/*,.pdf" multiple style="display:none" onchange="addFiles(this.files)">
+ <div class="file-area-icon"></div>
+ <div class="file-area-txt"><strong>Clique ou arraste</strong> para adicionar imagens</div>
+ <div class="file-area-sub">Até 4 imagens • Máx. ${MAX_MB}MB cada • JPG, PNG, PDF</div>
+ </div>
+ <div class="file-lista" id="fileLista"></div>
+ <div class="file-aviso" id="fileAviso"></div>`;
 }
 
 function ev(e){e.preventDefault();}
 function dropFile(e){e.preventDefault();document.getElementById('fileArea').classList.remove('drag');addFiles(e.dataTransfer.files);}
 
 function addFiles(files){
-  const aviso=document.getElementById('fileAviso');
-  aviso.style.display='none';
-  Array.from(files).forEach(f=>{
-    if(arquivos.length>=MAX_FILES){aviso.textContent='Máximo de '+MAX_FILES+' imagens atingido.';aviso.style.display='block';return;}
-    if(f.size>MAX_MB*1024*1024){aviso.textContent=`"${f.name}" é maior que ${MAX_MB}MB e foi ignorado.`;aviso.style.display='block';return;}
-    arquivos.push(f);
-  });
-  renderFileLista();
-  atualizarProgresso();
+ const aviso=document.getElementById('fileAviso');
+ aviso.style.display='none';
+ Array.from(files).forEach(f=>{
+ if(arquivos.length>=MAX_FILES){aviso.textContent='Máximo de '+MAX_FILES+' imagens atingido.';aviso.style.display='block';return;}
+ if(f.size>MAX_MB*1024*1024){aviso.textContent=`"${f.name}" é maior que ${MAX_MB}MB e foi ignorado.`;aviso.style.display='block';return;}
+ arquivos.push(f);
+ });
+ renderFileLista();
+ atualizarProgresso();
 }
 
 function renderFileLista(){
-  const lista=document.getElementById('fileLista');
-  if(!lista) return;
-  lista.innerHTML=arquivos.map((f,i)=>`
-    <div class="file-item">
-      <span class="file-item-nome">${f.name}</span>
-      <span class="file-item-size">${(f.size/1024/1024).toFixed(1)}MB</span>
-      <button class="file-item-rem" onclick="remFile(${i})">×</button>
-    </div>`).join('');
+ const lista=document.getElementById('fileLista');
+ if(!lista) return;
+ lista.innerHTML=arquivos.map((f,i)=>`
+ <div class="file-item">
+ <span class="file-item-nome">${f.name}</span>
+ <span class="file-item-size">${(f.size/1024/1024).toFixed(1)}MB</span>
+ <button class="file-item-rem" onclick="remFile(${i})">×</button>
+ </div>`).join('');
 }
 function remFile(i){arquivos.splice(i,1);renderFileLista();atualizarProgresso();}
 
 function bindEventos(){
-  document.querySelectorAll('.radio-opt').forEach(el=>{
-    el.addEventListener('click',function(){
-      const name=this.querySelector('input').name;
-      document.querySelectorAll(`[name="${name}"]`).forEach(r=>r.closest('.radio-opt').classList.remove('sel'));
-      this.querySelector('input').checked=true;
-      this.classList.add('sel');
-      atualizarProgresso();
-    });
-  });
-  document.querySelectorAll('#formConteudo input,#formConteudo textarea').forEach(el=>el.addEventListener('input',atualizarProgresso));
+ document.querySelectorAll('.radio-opt').forEach(el=>{
+ el.addEventListener('click',function(){
+ const name=this.querySelector('input').name;
+ document.querySelectorAll(`[name="${name}"]`).forEach(r=>r.closest('.radio-opt').classList.remove('sel'));
+ this.querySelector('input').checked=true;
+ this.classList.add('sel');
+ atualizarProgresso();
+ });
+ });
+ document.querySelectorAll('#formConteudo input,#formConteudo textarea').forEach(el=>el.addEventListener('input',function(){atualizarProgresso();if(window._salvarSessao)window._salvarSessao();}));
 }
 
 function atualizarProgresso(){
-  const campos=document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]):not([type=checkbox]),#formConteudo textarea:not(.obs-field textarea)');
-  const radiosGrupos=document.querySelectorAll('#formConteudo .radios').length;
-  const radiosSel=document.querySelectorAll('#formConteudo .radio-opt.sel').length;
-  const preenchidos=[...campos].filter(el=>el.value.trim()!==''&&!el.disabled).length;
-  const total=campos.length+radiosGrupos;
-  const pct=Math.round(((preenchidos+radiosSel)/total)*100);
-  document.getElementById('progressFill').style.width=Math.min(pct,100)+'%';
-  document.getElementById('progressTxt').textContent=Math.min(pct,100)+'% PREENCHIDO';
+ const campos=document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]):not([type=checkbox]),#formConteudo textarea:not(.obs-field textarea)');
+ const radiosGrupos=document.querySelectorAll('#formConteudo .radios').length;
+ const radiosSel=document.querySelectorAll('#formConteudo .radio-opt.sel').length;
+ const preenchidos=[...campos].filter(el=>el.value.trim()!==''&&!el.disabled).length;
+ const total=campos.length+radiosGrupos;
+ const pct=Math.round(((preenchidos+radiosSel)/total)*100);
+ document.getElementById('progressFill').style.width=Math.min(pct,100)+'%';
+ document.getElementById('progressTxt').textContent=Math.min(pct,100)+'% PREENCHIDO';
 }
 
 // OAUTH
 function getToken(){return sessionStorage.getItem('gdrive_token');}
 
 function coletarRespostas(){
-  respostas={};
-  document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]):not([type=checkbox]),#formConteudo textarea:not(.obs-field textarea)').forEach(el=>{
-    if(el.id) respostas[el.id]=el.value.trim();
-  });
-  document.querySelectorAll('#formConteudo .radio-opt.sel input').forEach(el=>{respostas[el.name]=el.value;});
-  // Aniversários
-  const anivNomes=[...document.querySelectorAll('.aniv-nome')].map(i=>i.value.trim()).filter(Boolean);
-  const anivDatas=[...document.querySelectorAll('.aniv-data')].map(i=>i.value.trim());
-  const anivArr=anivNomes.map((n,i)=>n+(anivDatas[i]?(' — '+anivDatas[i]):''));
-  respostas['aniversarios']=anivArr.join(' | ');
-  respostas['_nicho']=NICHOS[nichoAtual].label;
-  respostas['_data']=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+ respostas={};
+ document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]):not([type=checkbox]),#formConteudo textarea:not(.obs-field textarea)').forEach(el=>{
+ if(el.id) respostas[el.id]=el.value.trim();
+ });
+ document.querySelectorAll('#formConteudo .radio-opt.sel input').forEach(el=>{respostas[el.name]=el.value;});
+ // Aniversários
+ const anivNomes=[...document.querySelectorAll('.aniv-nome')].map(i=>i.value.trim()).filter(Boolean);
+ const anivDatas=[...document.querySelectorAll('.aniv-data')].map(i=>i.value.trim());
+ const anivArr=anivNomes.map((n,i)=>n+(anivDatas[i]?(' ~ '+anivDatas[i]):''));
+ respostas['aniversarios']=anivArr.join(' | ');
+ respostas['_nicho']=NICHOS[nichoAtual].label;
+ respostas['_data']=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
 function iniciarOAuth(){
-  coletarRespostas();
-  sessionStorage.setItem('form_respostas',JSON.stringify(respostas));
-  sessionStorage.setItem('form_nicho',nichoAtual);
-  const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:REDIRECT_URI,response_type:'token',scope:SCOPE,prompt:'consent'});
-  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
+ coletarRespostas();
+ sessionStorage.setItem('form_respostas',JSON.stringify(respostas));
+ sessionStorage.setItem('form_nicho',nichoAtual);
+ const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:REDIRECT_URI,response_type:'token',scope:SCOPE,prompt:'consent'});
+ window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
 }
 
 async function enviarFormulario(){
-  coletarRespostas();
-  const token=getToken();
-  if(!token){iniciarOAuth();return;}
-  await fazerUpload(token);
+ coletarRespostas();
+ const token=getToken();
+ if(!token){iniciarOAuth();return;}
+ await fazerUpload(token);
 }
 
 async function fazerUpload(token){
-  mostrarLoading(true);
-  document.getElementById('btnEnviar').disabled=true;
-  try{
-    const nome=`Onboarding — ${respostas['nome_empresa']||'Cliente'} — ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.txt`;
-    const meta={name:nome,parents:[FOLDER_ID],mimeType:'text/plain'};
-    const form=new FormData();
-    form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
-    form.append('file',new Blob([gerarConteudo()],{type:'text/plain;charset=utf-8'}));
-    const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
-    if(!r.ok) throw new Error('Upload texto falhou');
-    // Imagens
-    for(let i=0;i<arquivos.length;i++){
-      const f=arquivos[i];
-      const mImg={name:`${respostas['nome_empresa']||'Cliente'} — Insights ${i+1} — ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}`,parents:[FOLDER_ID]};
-      const fImg=new FormData();
-      fImg.append('metadata',new Blob([JSON.stringify(mImg)],{type:'application/json'}));
-      fImg.append('file',f);
-      const ri=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:fImg});
-      if(!ri.ok) console.warn('Imagem '+i+' falhou');
-    }
-    mostrarLoading(false);
-    document.getElementById('formScreen').style.display='none';
-    const ss=document.getElementById('successScreen');
-    ss.style.display='flex';
-    setTimeout(()=>{
-      document.getElementById('successLogo').classList.add('show');
-      document.getElementById('successDivider').classList.add('show');
-      document.getElementById('successMsg').classList.add('show');
-    },100);
-  }catch(e){
-    mostrarLoading(false);
-    document.getElementById('btnEnviar').disabled=false;
-    // Token pode ter expirado — tenta renovar
-    sessionStorage.removeItem('gdrive_token');
-    iniciarOAuth();
-  }
+ mostrarLoading(true);
+ document.getElementById('btnEnviar').disabled=true;
+ try{
+ const nome=`Onboarding ~ ${respostas['nome_empresa']||'Cliente'} ~ ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.txt`;
+ const meta={name:nome,parents:[FOLDER_ID],mimeType:'text/plain'};
+ const form=new FormData();
+ form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+ form.append('file',new Blob([gerarConteudo()],{type:'text/plain;charset=utf-8'}));
+ const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
+ if(!r.ok) throw new Error('Upload texto falhou');
+ // Imagens
+ for(let i=0;i<arquivos.length;i++){
+ const f=arquivos[i];
+ const mImg={name:`${respostas['nome_empresa']||'Cliente'} ~ Insights ${i+1} ~ ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}`,parents:[FOLDER_ID]};
+ const fImg=new FormData();
+ fImg.append('metadata',new Blob([JSON.stringify(mImg)],{type:'application/json'}));
+ fImg.append('file',f);
+ const ri=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:fImg});
+ if(!ri.ok) console.warn('Imagem '+i+' falhou');
+ }
+ mostrarLoading(false);
+ document.getElementById('formScreen').style.display='none';
+ const ss=document.getElementById('successScreen');
+ ss.style.display='flex';
+ setTimeout(()=>{
+ document.getElementById('successLogo').classList.add('show');
+ document.getElementById('successDivider').classList.add('show');
+    if(window._limparSessao)window._limparSessao();
+ document.getElementById('successMsg').classList.add('show');
+ },100);
+ }catch(e){
+ mostrarLoading(false);
+ document.getElementById('btnEnviar').disabled=false;
+ // Token pode ter expirado ~ tenta renovar
+ sessionStorage.removeItem('gdrive_token');
+ iniciarOAuth();
+ }
 }
 
 function gerarConteudo(){
-  const nicho=NICHOS[nichoAtual];
-  const SEP1='════════════════════════════════════════════════\n';
-  const SEP2='────────────────────────────────────────────────\n';
-  let t='';
-  t+=SEP1;
-  t+='  STUDIO PULGA — ONBOARDING DE CLIENTE\n';
-  t+=SEP1+'\n';
-  t+=`Nicho: ${nicho.label}\nData: ${respostas['_data']}\nEmpresa: ${respostas['nome_empresa']||'—'}\n\n`;
+ const nicho=NICHOS[nichoAtual];
+ const SEP1='\n';
+ const SEP2='\n';
+ let t='';
+ t+=SEP1;
+ t+=' STUDIO PULGA ~ ONBOARDING DE CLIENTE\n';
+ t+=SEP1+'\n';
+ t+=`Nicho: ${nicho.label}\nData: ${respostas['_data']}\nEmpresa: ${respostas['nome_empresa']||'—'}\n\n`;
 
-  const bloco=(titulo,campos)=>{
-    t+=SEP2+titulo+'\n'+SEP2;
-    campos.forEach(c=>{
-      if(c.tipo==='file') return;
-      if(c.tipo==='aniversario'){
-        t+=`\nDATA DE ANIVERSÁRIO DO(S) RESPONSÁVEL(IS)\n→ ${respostas['aniversarios']||'(não informado)'}\n`;
-      } else {
-        t+=`\n${c.label.toUpperCase()}\n→ ${respostas[c.id]||'(não respondido)'}\n`;
-      }
-    });
-    t+='\n';
-  };
+ const bloco=(titulo,campos)=>{
+ t+=SEP2+titulo+'\n'+SEP2;
+ campos.forEach(c=>{
+ if(c.tipo==='file') return;
+ if(c.tipo==='aniversario'){
+ t+=`\nDATA DE ANIVERSÁRIO DO(S) RESPONSÁVEL(IS)\n→ ${respostas['aniversarios']||'(não informado)'}\n`;
+ } else {
+ t+=`\n${c.label.toUpperCase()}\n→ ${respostas[c.id]||'(não respondido)'}\n`;
+ }
+ });
+ t+='\n';
+ };
 
-  bloco('1 — INFORMAÇÕES BÁSICAS',B.b1.campos);
-  bloco('2 — ALINHAMENTO DE ESCOPO',B.b2.campos);
-  bloco('3 — MOMENTO ATUAL & VISÃO',B.b3.campos);
+ bloco('1 ~ INFORMAÇÕES BÁSICAS',B.b1.campos);
+ bloco('2 ~ ALINHAMENTO DE ESCOPO',B.b2.campos);
+ bloco('3 ~ MOMENTO ATUAL & VISÃO',B.b3.campos);
 
-  t+=SEP2+`4 — SOBRE O NEGÓCIO (${nicho.label.toUpperCase()})\n`+SEP2;
-  nicho.secoes.forEach(s=>{
-    t+=`\n[ ${s.titulo.toUpperCase()} ]\n`;
-    s.campos.forEach(c=>{t+=`\n${c.label.toUpperCase()}\n→ ${respostas[c.id]||'(não respondido)'}\n`;});
-  });
-  t+='\n';
+ t+=SEP2+`4 ~ SOBRE O NEGÓCIO (${nicho.label.toUpperCase()})\n`+SEP2;
+ nicho.secoes.forEach(s=>{
+ t+=`\n[ ${s.titulo.toUpperCase()} ]\n`;
+ s.campos.forEach(c=>{t+=`\n${c.label.toUpperCase()}\n→ ${respostas[c.id]||'(não respondido)'}\n`;});
+ });
+ t+='\n';
 
-  bloco('5 — DIAGNÓSTICO ATUAL',B.b5.campos);
-  const imgs=arquivos.length?arquivos.map((f,i)=>`  ${i+1}. ${f.name} (${(f.size/1024/1024).toFixed(1)}MB)`).join('\n'):'  (nenhuma imagem enviada)';
-  t+=`PRINTS DO INSTAGRAM INSIGHTS\n${imgs}\n\n`;
-  bloco('6 — VISUAL & INFORMAÇÕES ADICIONAIS',B.b6.campos);
-  bloco('7 — PERSONALIDADE DA MARCA',B.b7.campos);
+ bloco('5 ~ DIAGNÓSTICO ATUAL',B.b5.campos);
+ const imgs=arquivos.length?arquivos.map((f,i)=>` ${i+1}. ${f.name} (${(f.size/1024/1024).toFixed(1)}MB)`).join('\n'):' (nenhuma imagem enviada)';
+ t+=`PRINTS DO INSTAGRAM INSIGHTS\n${imgs}\n\n`;
+ bloco('6 ~ VISUAL & INFORMAÇÕES ADICIONAIS',B.b6.campos);
+ bloco('7 ~ PERSONALIDADE DA MARCA',B.b7.campos);
 
-  t+=SEP1+'  Fim do documento\n'+SEP1;
-  return t;
+ t+=SEP1+' Fim do documento\n'+SEP1;
+ return t;
 }
 
 function mostrarLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
 
 // CALLBACK OAUTH
 (function(){
-  if(window.location.hash&&window.location.hash.includes('access_token')){
-    const p=new URLSearchParams(window.location.hash.slice(1));
-    const token=p.get('access_token');
-    if(token){
-      sessionStorage.setItem('gdrive_token',token);
-      const nicho=sessionStorage.getItem('form_nicho');
-      const resp=sessionStorage.getItem('form_respostas');
-      if(nicho&&resp){
-        nichoAtual=nicho;
-        respostas=JSON.parse(resp);
-        window.history.replaceState({},'',window.location.pathname);
-        mostrarLoading(true);
-        fazerUpload(token);
-        return;
-      }
-    }
-  }
+ if(window.location.hash&&window.location.hash.includes('access_token')){
+ const p=new URLSearchParams(window.location.hash.slice(1));
+ const token=p.get('access_token');
+ if(token){
+ sessionStorage.setItem('gdrive_token',token);
+ const nicho=sessionStorage.getItem('form_nicho');
+ const resp=sessionStorage.getItem('form_respostas');
+ if(nicho&&resp){
+ nichoAtual=nicho;
+ respostas=JSON.parse(resp);
+ window.history.replaceState({},'',window.location.pathname);
+ mostrarLoading(true);
+ fazerUpload(token);
+ return;
+ }
+ }
+ }
 })();
+// Restaurar sessão ao carregar
+document.addEventListener('DOMContentLoaded',function(){if(window._restaurarSessao)window._restaurarSessao();});
 </script>
 </body>
 </html>
