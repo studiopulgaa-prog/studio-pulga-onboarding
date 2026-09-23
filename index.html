@@ -7,13 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;700;900&family=Outfit:wght@300;400;500;600&family=Fredoka:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F4EADD;--bg2:#EAD8C5;--br:#6E2C14;--brl:rgba(110,44,20,0.13);--gray:rgba(110,44,20,0.5);--gray2:rgba(110,44,20,0.32);}
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{overflow-x:hidden;width:100%;max-width:100%;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:var(--br);min-height:100vh;overflow-x:hidden;width:100%;max-width:100vw;}
 
 /* LOGIN */
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
-.login{background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--brl);border-radius:24px;padding:52px 40px;width:100%;max-width:400px;text-align:center;animation:fadeUp .5s ease both;}
+.login{background:rgba(255,255,255,0.22);border:1px solid rgba(110,44,20,0.12);border-radius:24px;padding:52px 40px;width:100%;max-width:400px;text-align:center;animation:fadeUp .5s ease both;}
 .login-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:21px;letter-spacing:.03em;margin-bottom:8px;}
 .login-sub{font-size:13px;color:var(--gray);margin-bottom:36px;line-height:1.7;}
 .inp{width:100%;height:48px;padding:0 16px;border:1.5px solid var(--brl);border-radius:12px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:500;color:var(--br);outline:none;background:var(--bg);transition:border .2s,box-shadow .2s;text-align:center;letter-spacing:.12em;-webkit-appearance:none;appearance:none;}
@@ -30,12 +30,12 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 #formScreen.show{opacity:1;}
 
 /* TOPO */
-.form-topo{background:var(--br);color:#F4EADD;padding:14px clamp(20px,5vw,60px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(110,44,20,.2);}
+.form-topo{background:var(--br);color:#F4EADD;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(110,44,20,.2);width:100%;box-sizing:border-box;}
 .form-topo-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:16px;letter-spacing:.03em;}
 .form-topo-nicho{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.6;}
 
 /* HERO */
-.form-hero{background:var(--bg2);padding:clamp(40px,6vw,64px) clamp(24px,6vw,80px);}
+.form-hero{background:var(--bg2);padding:40px 20px;box-sizing:border-box;width:100%;}
 .form-hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray2);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
 .form-hero-tag::before{content:'';width:20px;height:1px;background:var(--gray2);}
 .form-hero-title{font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(32px,6vw,56px);line-height:1;letter-spacing:-.03em;margin-bottom:10px;}
@@ -43,16 +43,16 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .form-hero-nicho{display:inline-block;margin-top:16px;padding:6px 18px;background:var(--br);color:#F4EADD;border-radius:50px;font-size:12px;font-weight:600;letter-spacing:.06em;}
 
 /* PROGRESSO */
-.progress-wrap{padding:0 clamp(24px,6vw,80px);margin:28px 0;}
+.progress-wrap{padding:0 16px;margin:28px 0;box-sizing:border-box;}
 .progress-bar{height:3px;background:var(--brl);border-radius:3px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--br);border-radius:3px;transition:width .5s ease;}
 .progress-txt{text-align:right;font-size:11px;color:var(--gray2);margin-top:6px;font-weight:600;letter-spacing:.04em;}
 
 /* BODY */
-.form-body{max-width:700px;margin:0 auto;padding:0 clamp(16px,5vw,80px) 80px;}
+.form-body{max-width:700px;margin:0 auto;padding:0 16px 80px;box-sizing:border-box;}
 
 /* CARDS */
-.card{background:rgba(255,255,255,0.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--brl);border-radius:20px;padding:32px 28px;margin-bottom:20px;opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+.card{background:rgba(255,255,255,0.22);border:1px solid rgba(110,44,20,0.12);border-radius:20px;padding:32px 28px;margin-bottom:20px;opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
 .card.visible{opacity:1;transform:translateY(0);}
 .card-title{font-family:'League Spartan',sans-serif;font-weight:700;font-size:18px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--brl);}
 .secao-titulo{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray2);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--brl);}
@@ -76,14 +76,14 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 /* INPUTS */
 .field input[type=text],
 .field input[type=email],
-.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--brl);border-radius:12px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:400;color:var(--br);outline:none;background:var(--bg);transition:border .2s,box-shadow .2s;resize:vertical;line-height:1.6;-webkit-appearance:none;appearance:none;}
-.field input:focus,.field textarea:focus{border-color:var(--br);background:rgba(255,255,255,0.65);box-shadow:0 0 0 3px rgba(110,44,20,.07);}
+.field textarea{width:100%;max-width:100%;padding:12px 14px;border:1.5px solid var(--brl);border-radius:12px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:400;color:var(--br);outline:none;background:rgba(255,255,255,0.15);transition:border .2s,box-shadow .2s;resize:vertical;line-height:1.6;-webkit-appearance:none;appearance:none;box-sizing:border-box;}
+.field input:focus,.field textarea:focus{border-color:var(--br);background:rgba(255,255,255,0.35);box-shadow:0 0 0 3px rgba(110,44,20,.07);}
 .field input::placeholder,.field textarea::placeholder{color:var(--gray2);}
 .field textarea{min-height:90px;}
 
 /* RADIO */
 .radios{display:flex;flex-direction:column;gap:7px;}
-.radio-opt{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--brl);border-radius:12px;cursor:pointer;transition:all .2s;background:rgba(244,234,221,0.4);}
+.radio-opt{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--brl);border-radius:12px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.12);box-sizing:border-box;}
 .radio-opt:hover{border-color:var(--br);background:rgba(110,44,20,.04);}
 .radio-opt.sel{border-color:var(--br);background:rgba(110,44,20,.06);}
 .radio-opt input[type=radio]{accent-color:var(--br);width:16px;height:16px;flex-shrink:0;cursor:pointer;}
@@ -96,7 +96,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 /* ANIVERSÁRIOS MÚLTIPLOS */
 .aniv-lista{display:flex;flex-direction:column;gap:8px;}
 .aniv-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:start;}
-.aniv-row input{width:100%;padding:11px 13px;border:1.5px solid var(--brl);border-radius:10px;font-family:'Outfit',sans-serif;font-size:16px;color:var(--br);background:var(--bg);outline:none;transition:border .2s;-webkit-appearance:none;appearance:none;}
+.aniv-row input{width:100%;max-width:100%;padding:11px 13px;border:1.5px solid var(--brl);border-radius:10px;font-family:'Outfit',sans-serif;font-size:16px;color:var(--br);background:rgba(255,255,255,0.15);outline:none;transition:border .2s;-webkit-appearance:none;appearance:none;box-sizing:border-box;}
 .aniv-row input:focus{border-color:var(--br);}
 .aniv-row input::placeholder{color:var(--gray2);}
 .aniv-nao-sei{display:flex;align-items:center;gap:6px;margin-top:4px;cursor:pointer;}
@@ -116,7 +116,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .file-area-sub{display:none;}
 .file-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .file-lista{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
-.file-item{display:flex;align-items:center;gap:10px;padding:9px 14px;background:rgba(255,255,255,0.45);border:1px solid var(--brl);border-radius:10px;font-size:13px;}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.2);border:1px solid var(--brl);border-radius:10px;font-size:13px;width:100%;box-sizing:border-box;}
 .file-item-nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;}
 .file-item-size{font-size:11px;color:var(--gray);flex-shrink:0;}
 .file-item-rem{width:22px;height:22px;border-radius:50%;border:none;background:var(--bg2);color:var(--br);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;}
@@ -130,7 +130,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .btn-enviar:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
 
 /* SUCESSO */
-#successScreen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:var(--bg);text-align:center;}
+#successScreen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:transparent;text-align:center;}
 .success-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(36px,8vw,72px);color:var(--br);letter-spacing:-.03em;line-height:1;margin-bottom:24px;opacity:0;transform:translateY(30px);transition:all .7s ease;}
 .success-logo.show{opacity:1;transform:translateY(0);}
 .success-msg{font-size:clamp(15px,2vw,18px);color:var(--gray);font-weight:400;max-width:480px;line-height:1.8;opacity:0;transform:translateY(20px);transition:all .7s ease .3s;}
@@ -279,6 +279,42 @@ const MAX_MB=10;
 const SENHAS={'Construtora00':'Construtora','Planejados01':'Loja de Planejados','Construcao02':'Loja de Revestimento','Arq03':'Arquiteto(a)','Eng04':'Engenharia'};
 
 let nichoAtual='',respostas={},arquivos=[],anivCount=1;
+
+// ── IndexedDB para persistir arquivos através do redirect OAuth ──
+function abrirDB(){
+  return new Promise((res,rej)=>{
+    const req=indexedDB.open('sp_onboarding_files',1);
+    req.onupgradeneeded=e=>{ e.target.result.createObjectStore('files'); };
+    req.onsuccess=e=>res(e.target.result);
+    req.onerror=e=>rej(e);
+  });
+}
+async function salvarArquivosDB(){
+  try{
+    const db=await abrirDB();
+    const tx=db.transaction('files','readwrite');
+    tx.objectStore('files').put(arquivos,'pendentes');
+    return new Promise(res=>{tx.oncomplete=()=>res(true);tx.onerror=()=>res(false);});
+  }catch(e){return false;}
+}
+async function recuperarArquivosDB(){
+  try{
+    const db=await abrirDB();
+    const tx=db.transaction('files','readonly');
+    const req=tx.objectStore('files').get('pendentes');
+    return new Promise(res=>{
+      req.onsuccess=()=>res(req.result||[]);
+      req.onerror=()=>res([]);
+    });
+  }catch(e){return [];}
+}
+async function limparArquivosDB(){
+  try{
+    const db=await abrirDB();
+    const tx=db.transaction('files','readwrite');
+    tx.objectStore('files').delete('pendentes');
+  }catch(e){}
+}
 
 // Exemplos para tooltips ~ baseados no doc fictício
 const EXEMPLOS={
@@ -714,10 +750,11 @@ function coletarRespostas(){
  respostas['_data']=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
-function iniciarOAuth(){
+async function iniciarOAuth(){
  coletarRespostas();
  sessionStorage.setItem('form_respostas',JSON.stringify(respostas));
  sessionStorage.setItem('form_nicho',nichoAtual);
+ await salvarArquivosDB();
  const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:REDIRECT_URI,response_type:'token',scope:SCOPE,prompt:'consent'});
  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
 }
@@ -725,7 +762,7 @@ function iniciarOAuth(){
 async function enviarFormulario(){
  coletarRespostas();
  const token=getToken();
- if(!token){iniciarOAuth();return;}
+ if(!token){await iniciarOAuth();return;}
  await fazerUpload(token);
 }
 
@@ -733,11 +770,11 @@ async function fazerUpload(token){
  mostrarLoading(true);
  document.getElementById('btnEnviar').disabled=true;
  try{
- const nome=`Onboarding ~ ${respostas['nome_empresa']||'Cliente'} ~ ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.txt`;
- const meta={name:nome,parents:[FOLDER_ID],mimeType:'text/plain'};
+ const nome=`Onboarding ~ ${respostas['nome_empresa']||'Cliente'} ~ ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.html`;
+ const meta={name:nome,parents:[FOLDER_ID],mimeType:'text/html'};
  const form=new FormData();
  form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
- form.append('file',new Blob([gerarConteudo()],{type:'text/plain;charset=utf-8'}));
+ form.append('file',new Blob([gerarConteudo()],{type:'text/html;charset=utf-8'}));
  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
  if(!r.ok) throw new Error('Upload texto falhou');
  // Imagens
@@ -758,6 +795,7 @@ async function fazerUpload(token){
  document.getElementById('successLogo').classList.add('show');
  document.getElementById('successDivider').classList.add('show');
     if(window._limparSessao)window._limparSessao();
+    limparArquivosDB();
  document.getElementById('successMsg').classList.add('show');
  },100);
  }catch(e){
@@ -770,47 +808,54 @@ async function fazerUpload(token){
 }
 
 function gerarConteudo(){
- const nicho=NICHOS[nichoAtual];
- const SEP1='\n';
- const SEP2='\n';
- let t='';
- t+=SEP1;
- t+=' STUDIO PULGA ~ ONBOARDING DE CLIENTE\n';
- t+=SEP1+'\n';
- t+=`Nicho: ${nicho.label}\nData: ${respostas['_data']}\nEmpresa: ${respostas['nome_empresa']||'—'}\n\n`;
+  const nicho=NICHOS[nichoAtual];
+  const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  let h='<!DOCTYPE html><html><head><meta charset="UTF-8"><style>';
+  h+='body{font-family:Arial,Helvetica,sans-serif;background:#ffffff;color:#2a1a0e;max-width:760px;margin:40px auto;padding:0 24px;line-height:1.6;}';
+  h+='h1{font-size:20px;border-bottom:3px solid #6E2C14;padding-bottom:12px;margin-bottom:4px;}';
+  h+='.meta{color:#6E2C14;font-size:13px;margin-bottom:28px;}';
+  h+='h2{font-size:15px;background:#6E2C14;color:#F4EADD;padding:8px 14px;border-radius:6px;margin-top:32px;margin-bottom:16px;}';
+  h+='h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#6E2C14;opacity:.75;margin-top:20px;margin-bottom:10px;border-bottom:1px solid #EAD8C5;padding-bottom:6px;}';
+  h+='.pergunta{font-weight:700;color:#6E2C14;margin-top:14px;margin-bottom:3px;}';
+  h+='.resposta{color:#2a1a0e;margin-bottom:2px;padding-left:2px;}';
+  h+='.footer{margin-top:40px;padding-top:16px;border-top:1px solid #EAD8C5;color:#9a7b6a;font-size:12px;text-align:center;}';
+  h+='</style></head><body>';
+  h+='<h1>STUDIO PULGA ~ ONBOARDING DE CLIENTE</h1>';
+  h+=`<div class="meta">Nicho: ${esc(nicho.label)} &nbsp;|&nbsp; Data: ${esc(respostas["_data"])} &nbsp;|&nbsp; Empresa: ${esc(respostas["nome_empresa"]||"~")}</div>`;
 
- const bloco=(titulo,campos)=>{
- t+=SEP2+titulo+'\n'+SEP2;
- campos.forEach(c=>{
- if(c.tipo==='file') return;
- if(c.tipo==='aniversario'){
- t+=`\nDATA DE ANIVERSÁRIO DO(S) RESPONSÁVEL(IS)\n→ ${respostas['aniversarios']||'(não informado)'}\n`;
- } else {
- t+=`\n${c.label.toUpperCase()}\n→ ${respostas[c.id]||'(não respondido)'}\n`;
- }
- });
- t+='\n';
- };
+  const bloco=(titulo,campos)=>{
+    h+=`<h2>${esc(titulo)}</h2>`;
+    campos.forEach(cp=>{
+      if(cp.tipo==='file') return;
+      if(cp.tipo==='aniversario'){
+        h+=`<div class="pergunta">Data de aniversario do(s) responsavel(is)</div><div class="resposta">${esc(respostas['aniversarios']||'(nao informado)')}</div>`;
+      } else {
+        h+=`<div class="pergunta">${esc(cp.label)}</div><div class="resposta">${esc(respostas[cp.id]||'(nao respondido)')}</div>`;
+      }
+    });
+  };
 
- bloco('1 ~ INFORMAÇÕES BÁSICAS',B.b1.campos);
- bloco('2 ~ ALINHAMENTO DE ESCOPO',B.b2.campos);
- bloco('3 ~ MOMENTO ATUAL & VISÃO',B.b3.campos);
+  bloco('1 ~ Informacoes Basicas',B.b1.campos);
+  bloco('2 ~ Alinhamento de Escopo',B.b2.campos);
+  bloco('3 ~ Momento Atual e Visao',B.b3.campos);
 
- t+=SEP2+`4 ~ SOBRE O NEGÓCIO (${nicho.label.toUpperCase()})\n`+SEP2;
- nicho.secoes.forEach(s=>{
- t+=`\n[ ${s.titulo.toUpperCase()} ]\n`;
- s.campos.forEach(c=>{t+=`\n${c.label.toUpperCase()}\n→ ${respostas[c.id]||'(não respondido)'}\n`;});
- });
- t+='\n';
+  h+=`<h2>4 ~ Sobre o Negocio (${esc(nicho.label)})</h2>`;
+  nicho.secoes.forEach(s=>{
+    h+=`<h3>${esc(s.titulo)}</h3>`;
+    s.campos.forEach(cp=>{
+      h+=`<div class="pergunta">${esc(cp.label)}</div><div class="resposta">${esc(respostas[cp.id]||'(nao respondido)')}</div>`;
+    });
+  });
 
- bloco('5 ~ DIAGNÓSTICO ATUAL',B.b5.campos);
- const imgs=arquivos.length?arquivos.map((f,i)=>` ${i+1}. ${f.name} (${(f.size/1024/1024).toFixed(1)}MB)`).join('\n'):' (nenhuma imagem enviada)';
- t+=`PRINTS DO INSTAGRAM INSIGHTS\n${imgs}\n\n`;
- bloco('6 ~ VISUAL & INFORMAÇÕES ADICIONAIS',B.b6.campos);
- bloco('7 ~ PERSONALIDADE DA MARCA',B.b7.campos);
+  bloco('5 ~ Diagnostico Atual',B.b5.campos);
+  const imgs=arquivos.length?arquivos.map((f,i)=>`${i+1}. ${esc(f.name)} (${(f.size/1024/1024).toFixed(1)}MB)`).join('<br>'):'(nenhuma imagem enviada)';
+  h+=`<div class="pergunta">Prints do Instagram Insights</div><div class="resposta">${imgs}</div>`;
+  bloco('6 ~ Visual e Informacoes Adicionais',B.b6.campos);
+  bloco('7 ~ Personalidade da Marca',B.b7.campos);
 
- t+=SEP1+' Fim do documento\n'+SEP1;
- return t;
+  h+='<div class="footer">Documento gerado automaticamente pelo formulario de onboarding Studio Pulga</div>';
+  h+='</body></html>';
+  return h;
 }
 
 function mostrarLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
