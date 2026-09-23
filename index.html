@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Pulga — Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;700;900&family=Outfit:wght@300;400;500;600&family=Fredoka:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4EADD;--bg2:#EAD8C5;--br:#6E2C14;--brl:rgba(110,44,20,0.12);--gray:rgba(110,44,20,0.5);--gray2:rgba(110,44,20,0.3);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:var(--br);min-height:100vh;overflow-x:hidden;}
+
+/* ── LOGIN ── */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login{background:#fff;border:1px solid var(--brl);border-radius:20px;padding:48px 36px;width:100%;max-width:400px;text-align:center;}
+.login-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:20px;letter-spacing:.02em;margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--gray);margin-bottom:32px;line-height:1.6;}
+.inp{width:100%;height:46px;padding:0 16px;border:1.5px solid var(--brl);border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--br);outline:none;background:rgba(255,255,255,.8);transition:border .2s;text-align:center;letter-spacing:.12em;}
+.inp:focus{border-color:var(--br);}
+.inp::placeholder{color:var(--gray2);letter-spacing:0;}
+.btn-main{width:100%;height:46px;border:none;border-radius:10px;background:var(--br);color:#F4EADD;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:10px;}
+.btn-main:hover{background:#5A2210;}
+.btn-main:disabled{opacity:.5;cursor:not-allowed;}
+.err{font-size:12px;color:#c0392b;margin-top:10px;display:none;}
+
+/* ── FORM SCREEN ── */
+#formScreen{display:none;}
+
+/* TOPO */
+.form-topo{background:var(--br);color:#F4EADD;padding:14px clamp(20px,5vw,60px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.form-topo-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:16px;letter-spacing:.02em;}
+.form-topo-nicho{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.6;}
+
+/* HERO INTERNO */
+.form-hero{background:var(--bg2);padding:clamp(40px,6vw,64px) clamp(24px,6vw,80px);}
+.form-hero-tag{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray2);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.form-hero-tag::before{content:'';width:20px;height:1px;background:var(--gray2);}
+.form-hero-title{font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(32px,6vw,56px);line-height:1;letter-spacing:-.03em;margin-bottom:10px;}
+.form-hero-sub{font-size:15px;color:var(--gray);font-weight:400;max-width:520px;line-height:1.7;}
+.form-hero-nicho{display:inline-block;margin-top:16px;padding:6px 16px;background:var(--br);color:#F4EADD;border-radius:50px;font-size:12px;font-weight:600;letter-spacing:.06em;}
+
+/* PROGRESSO */
+.progress-wrap{padding:0 clamp(24px,6vw,80px);margin:28px 0;}
+.progress-bar{height:3px;background:var(--brl);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--br);border-radius:3px;transition:width .4s ease;}
+.progress-txt{text-align:right;font-size:11px;color:var(--gray2);margin-top:6px;font-weight:600;letter-spacing:.04em;}
+
+/* CONTEÚDO */
+.form-body{max-width:680px;margin:0 auto;padding:0 clamp(24px,6vw,80px) 80px;}
+
+/* CARDS/BLOCOS */
+.card{background:#fff;border:1px solid var(--brl);border-radius:20px;padding:28px 24px;margin-bottom:20px;}
+.card-title{font-family:'League Spartan',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;}
+.card-intro{font-size:13px;color:var(--gray);margin-bottom:24px;line-height:1.6;}
+.secao-titulo{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray2);margin:28px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--brl);}
+.secao-titulo:first-child{margin-top:0;}
+
+/* CAMPOS */
+.field{margin-bottom:16px;}
+.label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray2);margin-bottom:6px;}
+.label span{text-transform:none;font-weight:400;font-size:13px;color:var(--gray);letter-spacing:0;}
+.field input[type=text],
+.field input[type=email],
+.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--brl);border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:400;color:var(--br);outline:none;background:rgba(255,255,255,.6);transition:border .2s;resize:vertical;}
+.field input:focus,.field textarea:focus{border-color:var(--br);background:#fff;}
+.field input::placeholder,.field textarea::placeholder{color:var(--gray2);}
+.field textarea{min-height:88px;line-height:1.6;}
+
+/* RADIO */
+.radios{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.radio-opt{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--brl);border-radius:10px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.4);}
+.radio-opt:hover{border-color:var(--br);background:rgba(110,44,20,.04);}
+.radio-opt.sel{border-color:var(--br);background:rgba(110,44,20,.06);}
+.radio-opt input{accent-color:var(--br);width:16px;height:16px;flex-shrink:0;cursor:pointer;}
+.radio-opt-label{font-size:13px;font-weight:400;cursor:pointer;}
+
+/* FILE */
+.file-input{display:none;}
+.file-label{display:flex;align-items:center;gap:10px;padding:13px 16px;border:1.5px dashed var(--brl);border-radius:10px;cursor:pointer;font-size:13px;color:var(--gray);background:rgba(255,255,255,.4);transition:all .2s;}
+.file-label:hover{border-color:var(--br);color:var(--br);}
+.file-nome{font-size:12px;color:var(--br);margin-top:6px;font-weight:500;}
+
+/* BTN ENVIAR */
+.btn-enviar{width:100%;height:52px;border:none;border-radius:12px;background:var(--br);color:#F4EADD;font-family:'League Spartan',sans-serif;font-size:17px;font-weight:700;cursor:pointer;letter-spacing:.04em;margin-top:8px;transition:all .2s;}
+.btn-enviar:hover{background:#5A2210;}
+.btn-enviar:disabled{opacity:.5;cursor:not-allowed;}
+
+/* SUCESSO */
+#successScreen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
+.success-box{background:#fff;border:1px solid var(--brl);border-radius:20px;padding:56px 40px;max-width:440px;width:100%;text-align:center;}
+.success-icon{font-size:48px;margin-bottom:20px;}
+.success-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:18px;margin-bottom:20px;opacity:.4;}
+.success-title{font-family:'League Spartan',sans-serif;font-weight:900;font-size:26px;letter-spacing:-.02em;margin-bottom:10px;}
+.success-sub{font-size:14px;color:var(--gray);line-height:1.7;}
+
+/* LOADING */
+#loadingOverlay{display:none;position:fixed;inset:0;background:rgba(244,234,221,.94);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.spinner{width:40px;height:40px;border:3px solid var(--brl);border-top-color:var(--br);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-txt{font-family:'League Spartan',sans-serif;font-size:14px;color:var(--br);font-weight:700;letter-spacing:.04em;}
+
+@media(max-width:520px){
+  .card{padding:22px 18px;}
+  .login{padding:36px 24px;}
+  .form-body{padding:0 16px 80px;}
+  .form-hero{padding:40px 20px;}
+  .progress-wrap{padding:0 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login">
+    <div class="login-logo">STUDIO PULGA</div>
+    <div class="login-sub">Digite a senha que recebeu para<br>acessar seu formulário de onboarding.</div>
+    <input class="inp" type="password" id="senhaInput" placeholder="••••••••••" autocomplete="off">
+    <button class="btn-main" onclick="fazerLogin()">Acessar →</button>
+    <div class="err" id="loginErro">Senha incorreta. Verifique e tente novamente.</div>
+  </div>
+</div>
+
+<!-- FORMULÁRIO -->
+<div id="formScreen">
+  <div class="form-topo">
+    <div class="form-topo-logo">STUDIO PULGA</div>
+    <div class="form-topo-nicho" id="topoNicho"></div>
+  </div>
+  <div class="form-hero">
+    <div class="form-hero-tag">Onboarding</div>
+    <div class="form-hero-title">Conte tudo<br>pra gente.</div>
+    <div class="form-hero-sub">Essas informações guiam toda a nossa estratégia juntos — quanto mais você compartilhar, melhor o resultado.</div>
+    <div class="form-hero-nicho" id="heroNicho"></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-txt" id="progressTxt">0% PREENCHIDO</div>
+  </div>
+  <div class="form-body">
+    <div id="formConteudo"></div>
+    <button class="btn-enviar" id="btnEnviar" onclick="enviarFormulario()">Enviar respostas →</button>
+  </div>
+</div>
+
+<!-- SUCESSO -->
+<div id="successScreen" style="display:flex;display:none;">
+  <div class="success-box">
+    <div class="success-logo">STUDIO PULGA</div>
+    <div class="success-icon">✅</div>
+    <div class="success-title">Recebemos tudo!</div>
+    <div class="success-sub">Suas respostas foram enviadas com sucesso.<br>Em breve nossa equipe entrará em contato<br>com o próximo passo.</div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="loadingOverlay" style="display:flex;display:none;">
+  <div class="spinner"></div>
+  <div class="loading-txt">Enviando respostas…</div>
+</div>
+
+<script>
+const CLIENT_ID = '19788603553-01os3u2f30a6infut0slflqfdknc546m.apps.googleusercontent.com';
+const FOLDER_ID = '1M4uhyUFKK8FqIhr-S0XVeYQ8n1n6TgVI';
+const REDIRECT_URI = 'https://onboarding.studiopulga.com.br/oauth/callback';
+const SCOPE = 'https://www.googleapis.com/auth/drive.file';
+
+const SENHAS = {
+  'Construtora00':'Construtora',
+  'Planejados01':'Loja de Planejados',
+  'Construcao02':'Loja de Revestimento',
+  'Arq03':'Arquiteto(a)',
+  'Eng04':'Engenharia'
+};
+
+let nichoAtual='', respostas={}, arquivoInsights=null;
+
+// LOGIN
+function fazerLogin(){
+  const s=document.getElementById('senhaInput').value.trim();
+  if(SENHAS[s]){
+    nichoAtual=s;
+    document.getElementById('loginErro').style.display='none';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('formScreen').style.display='block';
+    document.getElementById('topoNicho').textContent=SENHAS[s];
+    document.getElementById('heroNicho').textContent=SENHAS[s];
+    renderForm();
+  } else {
+    document.getElementById('loginErro').style.display='block';
+  }
+}
+document.getElementById('senhaInput').addEventListener('keydown',e=>{if(e.key==='Enter')fazerLogin();});
+
+// ESTRUTURA DE BLOCOS
+const B={
+  b1:{titulo:'1 — Informações Básicas',campos:[
+    {id:'nome_empresa',label:'Nome da empresa / marca',tipo:'text'},
+    {id:'produto_servico',label:'Produto ou serviço principal',tipo:'text'},
+    {id:'responsavel',label:'Responsável pela aprovação de conteúdo',tipo:'text'},
+    {id:'email',label:'E-mail do responsável',tipo:'email'},
+    {id:'aniversario',label:'Data de aniversário do(s) responsável(is)',tipo:'text'},
+    {id:'site',label:'Site',tipo:'text',opt:true}
+  ]},
+  b2:{titulo:'2 — Alinhamento de Escopo',intro:'Leia e confirme cada ponto abaixo — isso garante que começamos alinhados desde o dia 1.',campos:[
+    {id:'esc1',label:'O serviço contratado é gestão de conteúdo e não inclui tráfego pago, salvo se contratado separadamente.',tipo:'radio',opcoes:['Entendi e concordo','Tenho dúvidas sobre isso']},
+    {id:'esc2',label:'Não há garantia de número de leads ou resultados diretos de vendas.',tipo:'radio',opcoes:['Entendi e concordo','Quero entender melhor']},
+    {id:'esc3',label:'A autonomia criativa (estética, formato, linguagem) é do Studio Pulga, dentro do alinhado.',tipo:'radio',opcoes:['Entendi e concordo','Quero conversar sobre isso']},
+    {id:'esc4',label:'Me comprometo a dar retorno de aprovação em até 48h pelo canal oficial.',tipo:'radio',opcoes:['Me comprometo','Preciso alinhar internamente']}
+  ]},
+  b3:{titulo:'3 — Momento Atual & Visão',campos:[
+    {id:'fase',label:'Em que fase a empresa está hoje?',tipo:'textarea'},
+    {id:'mudancas',label:'O que mudou nos últimos 12 meses?',tipo:'textarea'},
+    {id:'trava',label:'O que trava o crescimento hoje?',tipo:'textarea'},
+    {id:'resultado_6m',label:'Qual resultado você espera do marketing nos próximos 6 a 12 meses?',tipo:'textarea'},
+    {id:'lancamentos',label:'Há lançamentos ou mudanças programadas nesse período?',tipo:'textarea'},
+    {id:'visao_longo',label:'Onde a marca quer estar em 3 a 5 anos?',tipo:'textarea'},
+    {id:'sonho',label:'O que você nunca falou em voz alta sobre o sonho dessa marca? 🤫',tipo:'textarea'}
+  ]},
+  b5:{titulo:'5 — Diagnóstico Atual',campos:[
+    {id:'problemas_redes',label:'Quais os principais problemas que você percebe nas redes hoje?',tipo:'textarea'},
+    {id:'inspiracoes',label:'Que perfis ou marcas te inspiram? (pode ser de fora do nicho)',tipo:'textarea'},
+    {id:'mensagens',label:'Quais as 3 mensagens mais importantes que sua marca precisa comunicar?',tipo:'textarea'},
+    {id:'tom_voz',label:'Como você descreveria o tom de voz ideal da marca?',tipo:'textarea'},
+    {id:'vantagens',label:'O que já funciona bem hoje na comunicação?',tipo:'textarea'},
+    {id:'insights_file',label:'Print do Instagram Insights — últimos 30 dias (alcance, impressões, seguidores ganhos)',tipo:'file'}
+  ]},
+  b6:{titulo:'6 — Visual & Informações Adicionais',campos:[
+    {id:'identidade',label:'Já tem identidade visual definida?',tipo:'radio',opcoes:['Sim, completa','Parcialmente','Não tenho']},
+    {id:'influenciadores',label:'Já trabalhou ou tem interesse em trabalhar com influenciadores?',tipo:'textarea'},
+    {id:'seguidores',label:'Como você avalia a qualidade da sua base de seguidores?',tipo:'radio',opcoes:['Muito engajada','Engajamento médio','Pouco engajamento','Não sei avaliar']},
+    {id:'mood',label:'Se sua marca fosse uma playlist, que estilo musical representaria?',tipo:'textarea'},
+    {id:'palavras_chave',label:'3 palavras que definem sua marca',tipo:'text'},
+    {id:'agencia_anterior',label:'Já trabalhou com agência antes? Como foi?',tipo:'textarea'},
+    {id:'equipe',label:'Quem da equipe pode aparecer nos conteúdos / gravar?',tipo:'textarea'}
+  ]},
+  b7:{titulo:'7 — Personalidade da Marca',campos:[
+    {id:'marca_pessoa',label:'Se sua marca fosse uma pessoa, como ela seria? Descreva o jeito de ser, de falar, de se vestir.',tipo:'textarea'},
+    {id:'sentimento',label:'Que sentimento você quer que as pessoas tenham quando veem seu conteúdo?',tipo:'textarea'},
+    {id:'marcas_insp',label:'Quais 3 marcas de FORA do seu nicho inspiram sua forma de comunicar? (ex: Apple, Nubank, Airbnb...)',tipo:'textarea'},
+    {id:'nunca_soar',label:'O que a comunicação da sua marca NUNCA pode soar?',tipo:'textarea'}
+  ]}
+};
+
+const NICHOS={
+  'Construtora00':{label:'Construtora',secoes:[
+    {titulo:'História & Posicionamento',campos:[
+      {id:'n_historia',label:'Como a construtora surgiu? 🏗️',tipo:'textarea'},
+      {id:'n_posicionamento',label:'Como você posiciona a construtora hoje? (econômico, médio, alto padrão?)',tipo:'textarea'},
+      {id:'n_diferencial',label:'O que diferencia vocês de outras construtoras da região?',tipo:'textarea'}
+    ]},
+    {titulo:'Produto & Entrega',campos:[
+      {id:'n_tipo_obra',label:'Que tipo de obra vocês entregam? (residencial, comercial, condomínio...)',tipo:'text'},
+      {id:'n_ticket',label:'Qual o ticket médio de um imóvel?',tipo:'text'},
+      {id:'n_prazo',label:'Qual o prazo médio de entrega de uma obra?',tipo:'text'},
+      {id:'n_diferenciais',label:'Quais diferenciais vocês entregam no produto final?',tipo:'textarea'}
+    ]},
+    {titulo:'Público-Alvo & Jornada',campos:[
+      {id:'n_publico',label:'Quem é o comprador ideal? Perfil, faixa etária, renda, motivação.',tipo:'textarea'},
+      {id:'n_jornada',label:'Como esse comprador chega até vocês hoje?',tipo:'textarea'},
+      {id:'n_objecoes',label:'Quais as principais objeções que vocês enfrentam na venda?',tipo:'textarea'}
+    ]},
+    {titulo:'Concorrência',campos:[
+      {id:'n_concorrentes',label:'Quem são os principais concorrentes na região?',tipo:'textarea'},
+      {id:'n_vantagem',label:'O que vocês fazem melhor do que eles?',tipo:'textarea'}
+    ]}
+  ]},
+  'Planejados01':{label:'Loja de Planejados',secoes:[
+    {titulo:'História & Posicionamento',campos:[
+      {id:'n_historia',label:'Como a loja surgiu? O que motivou entrar nesse mercado? 🪵',tipo:'textarea'},
+      {id:'n_posicionamento',label:'Como você posiciona a loja hoje?',tipo:'textarea'},
+      {id:'n_diferencial',label:'O que diferencia a loja de concorrentes da região?',tipo:'textarea'}
+    ]},
+    {titulo:'Produto & Diferencial',campos:[
+      {id:'n_linhas',label:'Quais linhas e materiais vocês trabalham?',tipo:'textarea'},
+      {id:'n_ticket',label:'Qual o ticket médio de um projeto completo?',tipo:'text'},
+      {id:'n_prazo',label:'Qual o prazo médio de entrega e instalação?',tipo:'text'},
+      {id:'n_fabrica',label:'Vocês fabricam ou revendem? Têm fábrica própria?',tipo:'text'}
+    ]},
+    {titulo:'Público-Alvo & Jornada',campos:[
+      {id:'n_publico',label:'Quem é o cliente ideal? Perfil, momento de vida, motivação.',tipo:'textarea'},
+      {id:'n_jornada',label:'Como o cliente chega até vocês?',tipo:'textarea'},
+      {id:'n_objecoes',label:'Quais as principais objeções na hora de fechar?',tipo:'textarea'}
+    ]},
+    {titulo:'Relação com Arquitetos',campos:[
+      {id:'n_arq_relacao',label:'Vocês já trabalham com arquitetos? Como é essa relação hoje?',tipo:'textarea'},
+      {id:'n_arq_programa',label:'Têm programa de benefícios ou parceria formal com arquitetos?',tipo:'textarea'},
+      {id:'n_arq_qtd',label:'Quantos projetos por mês vêm indicados por arquitetos?',tipo:'text'}
+    ]},
+    {titulo:'Concorrência',campos:[
+      {id:'n_concorrentes',label:'Quem são os principais concorrentes na região?',tipo:'textarea'},
+      {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+    ]}
+  ]},
+  'Construcao02':{label:'Loja de Revestimento',secoes:[
+    {titulo:'História & Posicionamento',campos:[
+      {id:'n_historia',label:'Como a loja surgiu? O que te trouxe para esse mercado? 🪨',tipo:'textarea'},
+      {id:'n_posicionamento',label:'Como você posiciona a loja?',tipo:'textarea'},
+      {id:'n_diferencial',label:'O que diferencia vocês de outras lojas de revestimento?',tipo:'textarea'}
+    ]},
+    {titulo:'Produto & Diferencial',campos:[
+      {id:'n_categorias',label:'Quais categorias de produto vocês trabalham?',tipo:'textarea'},
+      {id:'n_marcas',label:'Quais marcas ou fornecedores principais?',tipo:'textarea'},
+      {id:'n_ticket',label:'Qual o ticket médio de uma venda?',tipo:'text'},
+      {id:'n_exclusivo',label:'Têm algum produto exclusivo ou linha diferenciada?',tipo:'textarea'}
+    ]},
+    {titulo:'Público-Alvo & Jornada',campos:[
+      {id:'n_publico',label:'Quem compra mais hoje — consumidor final, construtoras ou arquitetos?',tipo:'textarea'},
+      {id:'n_jornada',label:'Como o cliente chega até a loja?',tipo:'textarea'},
+      {id:'n_objecoes',label:'Quais as principais objeções na venda?',tipo:'textarea'}
+    ]},
+    {titulo:'Relação com Arquitetos',campos:[
+      {id:'n_arq_relacao',label:'Como é a relação com arquitetos hoje?',tipo:'textarea'},
+      {id:'n_arq_programa',label:'Têm algum programa de parceria ou benefícios para arquitetos?',tipo:'textarea'}
+    ]},
+    {titulo:'Concorrência',campos:[
+      {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
+      {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+    ]}
+  ]},
+  'Arq03':{label:'Arquiteto(a)',secoes:[
+    {titulo:'História & Posicionamento',campos:[
+      {id:'n_historia',label:'Como seu escritório surgiu? O que te levou a ser arquiteto(a)? ✏️',tipo:'textarea'},
+      {id:'n_posicionamento',label:'Como você se posiciona no mercado hoje?',tipo:'textarea'},
+      {id:'n_diferencial',label:'O que diferencia seu trabalho de outros arquitetos?',tipo:'textarea'},
+      {id:'n_estilo',label:'Como você descreveria seu estilo arquitetônico / de interiores?',tipo:'textarea'}
+    ]},
+    {titulo:'Serviço & Entrega',campos:[
+      {id:'n_servicos',label:'Quais serviços você oferece?',tipo:'textarea'},
+      {id:'n_ticket',label:'Qual o ticket médio de um projeto?',tipo:'text'},
+      {id:'n_prazo',label:'Qual o prazo médio de um projeto completo?',tipo:'text'},
+      {id:'n_area',label:'Qual a metragem média dos projetos que você atende?',tipo:'text'}
+    ]},
+    {titulo:'Público-Alvo & Jornada',campos:[
+      {id:'n_publico',label:'Quem é o cliente ideal? Perfil, faixa etária, tipo de projeto.',tipo:'textarea'},
+      {id:'n_jornada',label:'Como os clientes chegam até você hoje?',tipo:'textarea'},
+      {id:'n_objecoes',label:'Quais as principais objeções para fechar um projeto?',tipo:'textarea'}
+    ]},
+    {titulo:'Concorrência',campos:[
+      {id:'n_concorrentes',label:'Quem você enxerga como referência ou concorrente no mercado local?',tipo:'textarea'},
+      {id:'n_vantagem',label:'O que você faz melhor ou diferente deles?',tipo:'textarea'}
+    ]}
+  ]},
+  'Eng04':{label:'Engenharia',secoes:[
+    {titulo:'História & Posicionamento',campos:[
+      {id:'n_historia',label:'Como o escritório/empresa surgiu? 📐',tipo:'textarea'},
+      {id:'n_posicionamento',label:'Como vocês se posicionam no mercado?',tipo:'textarea'},
+      {id:'n_diferencial',label:'O que diferencia vocês de outros escritórios de engenharia?',tipo:'textarea'}
+    ]},
+    {titulo:'Serviço & Entrega',campos:[
+      {id:'n_servicos',label:'Quais serviços vocês oferecem?',tipo:'textarea'},
+      {id:'n_ticket',label:'Qual o ticket médio de um projeto ou contrato?',tipo:'text'},
+      {id:'n_prazo',label:'Qual o prazo médio de entrega?',tipo:'text'},
+      {id:'n_especialidade',label:'Têm alguma especialidade técnica que se destaca?',tipo:'textarea'}
+    ]},
+    {titulo:'Público-Alvo & Jornada',campos:[
+      {id:'n_publico',label:'Quem contrata vocês? (pessoa física, construtoras, empresas, órgãos públicos...)',tipo:'textarea'},
+      {id:'n_jornada',label:'Como os clientes chegam até vocês hoje?',tipo:'textarea'},
+      {id:'n_objecoes',label:'Quais as principais objeções na hora de fechar?',tipo:'textarea'}
+    ]},
+    {titulo:'Concorrência',campos:[
+      {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
+      {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+    ]}
+  ]}
+};
+
+// RENDER
+function renderForm(){
+  const nicho=NICHOS[nichoAtual];
+  let html='';
+  ['b1','b2','b3'].forEach(k=>{
+    const b=B[k];
+    html+=`<div class="card"><div class="card-title">${b.titulo}</div>`;
+    if(b.intro) html+=`<div class="card-intro">${b.intro}</div>`;
+    else html+=`<div style="margin-bottom:20px"></div>`;
+    html+=renderCampos(b.campos);
+    html+=`</div>`;
+  });
+  html+=`<div class="card"><div class="card-title">4 — Sobre o Negócio</div><div style="margin-bottom:20px"></div>`;
+  nicho.secoes.forEach(s=>{
+    html+=`<div class="secao-titulo">${s.titulo}</div>`;
+    html+=renderCampos(s.campos);
+  });
+  html+=`</div>`;
+  ['b5','b6','b7'].forEach(k=>{
+    const b=B[k];
+    html+=`<div class="card"><div class="card-title">${b.titulo}</div><div style="margin-bottom:20px"></div>`;
+    html+=renderCampos(b.campos);
+    html+=`</div>`;
+  });
+  document.getElementById('formConteudo').innerHTML=html;
+  document.querySelectorAll('.radio-opt').forEach(el=>{
+    el.addEventListener('click',function(){
+      const name=this.querySelector('input').name;
+      document.querySelectorAll(`[name="${name}"]`).forEach(r=>r.closest('.radio-opt').classList.remove('sel'));
+      this.querySelector('input').checked=true;
+      this.classList.add('sel');
+      atualizarProgresso();
+    });
+  });
+  document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',atualizarProgresso));
+  const fi=document.getElementById('insights_file');
+  if(fi) fi.addEventListener('change',function(){
+    arquivoInsights=this.files[0];
+    const n=document.getElementById('file_nome');
+    if(n) n.textContent=arquivoInsights?'📎 '+arquivoInsights.name:'';
+    atualizarProgresso();
+  });
+}
+
+function renderCampos(campos){
+  let html='';
+  campos.forEach(c=>{
+    html+=`<div class="field"><div class="label">${c.label}${c.opt?' <span>(opcional)</span>':''}</div>`;
+    if(c.tipo==='text'||c.tipo==='email'){
+      html+=`<input type="${c.tipo}" id="${c.id}" name="${c.id}">`;
+    } else if(c.tipo==='textarea'){
+      html+=`<textarea id="${c.id}" name="${c.id}" rows="3"></textarea>`;
+    } else if(c.tipo==='radio'){
+      html+=`<div class="radios">`;
+      c.opcoes.forEach((op,i)=>{
+        html+=`<div class="radio-opt"><input type="radio" name="${c.id}" value="${op}" id="${c.id}_${i}"><label class="radio-opt-label" for="${c.id}_${i}">${op}</label></div>`;
+      });
+      html+=`</div>`;
+    } else if(c.tipo==='file'){
+      html+=`<label class="file-label" for="insights_file">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Clique para anexar a imagem
+      </label>
+      <input type="file" class="file-input" id="insights_file" accept="image/*,.pdf">
+      <div class="file-nome" id="file_nome"></div>`;
+    }
+    html+=`</div>`;
+  });
+  return html;
+}
+
+function atualizarProgresso(){
+  const campos=document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]),#formConteudo textarea');
+  const radiosGrupos=document.querySelectorAll('#formConteudo .radios').length;
+  const radiosSel=document.querySelectorAll('#formConteudo .radio-opt.sel').length;
+  const preenchidos=[...campos].filter(el=>el.value.trim()!=='').length;
+  const total=campos.length+radiosGrupos;
+  const pct=Math.round(((preenchidos+radiosSel)/total)*100);
+  document.getElementById('progressFill').style.width=Math.min(pct,100)+'%';
+  document.getElementById('progressTxt').textContent=Math.min(pct,100)+'% PREENCHIDO';
+}
+
+// OAUTH + DRIVE
+function getToken(){return sessionStorage.getItem('gdrive_token');}
+
+function iniciarOAuth(){
+  coletarRespostas();
+  sessionStorage.setItem('form_respostas',JSON.stringify(respostas));
+  sessionStorage.setItem('form_nicho',nichoAtual);
+  const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:REDIRECT_URI,response_type:'token',scope:SCOPE,prompt:'consent'});
+  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
+}
+
+function coletarRespostas(){
+  respostas={};
+  document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]),#formConteudo textarea').forEach(el=>{respostas[el.id]=el.value.trim();});
+  document.querySelectorAll('#formConteudo .radio-opt.sel input').forEach(el=>{respostas[el.name]=el.value;});
+  respostas['_nicho']=NICHOS[nichoAtual].label;
+  respostas['_data']=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+async function enviarFormulario(){
+  coletarRespostas();
+  const token=getToken();
+  if(!token){iniciarOAuth();return;}
+  await fazerUpload(token);
+}
+
+async function fazerUpload(token){
+  mostrarLoading(true);
+  document.getElementById('btnEnviar').disabled=true;
+  try{
+    const nome=`Onboarding — ${respostas['nome_empresa']||'Cliente'} — ${new Date().toLocaleDateString('pt-BR')}.txt`;
+    const conteudo=gerarConteudo();
+    const meta={name:nome,parents:[FOLDER_ID],mimeType:'text/plain'};
+    const form=new FormData();
+    form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+    form.append('file',new Blob([conteudo],{type:'text/plain;charset=utf-8'}));
+    const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
+    if(!r.ok) throw new Error('Upload falhou');
+    if(arquivoInsights){
+      const metaImg={name:`Insights — ${respostas['nome_empresa']||'Cliente'} — ${new Date().toLocaleDateString('pt-BR')}`,parents:[FOLDER_ID]};
+      const formImg=new FormData();
+      formImg.append('metadata',new Blob([JSON.stringify(metaImg)],{type:'application/json'}));
+      formImg.append('file',arquivoInsights);
+      await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:formImg});
+    }
+    mostrarLoading(false);
+    document.getElementById('formScreen').style.display='none';
+    document.getElementById('successScreen').style.display='flex';
+  }catch(e){
+    mostrarLoading(false);
+    document.getElementById('btnEnviar').disabled=false;
+    alert('Erro ao enviar. Tente novamente.');
+    console.error(e);
+  }
+}
+
+function gerarConteudo(){
+  const nicho=NICHOS[nichoAtual];
+  let t='';
+  t+='════════════════════════════════════════════════\n';
+  t+='  STUDIO PULGA — ONBOARDING DE CLIENTE\n';
+  t+='════════════════════════════════════════════════\n\n';
+  t+=`Nicho: ${nicho.label}\nData: ${respostas['_data']}\nEmpresa: ${respostas['nome_empresa']||'—'}\n\n`;
+  const imprimirBloco=(titulo,campos)=>{
+    t+='────────────────────────────────────────────────\n';
+    t+=titulo+'\n';
+    t+='────────────────────────────────────────────────\n';
+    campos.forEach(c=>{if(c.tipo!=='file'){t+=`${c.label}\n→ ${respostas[c.id]||'(não respondido)'}\n\n`;}else{t+=`${c.label}\n→ ${arquivoInsights?'[Arquivo: '+arquivoInsights.name+']':'(não enviado)'}\n\n`;}});
+  };
+  imprimirBloco('1 — INFORMAÇÕES BÁSICAS',B.b1.campos);
+  imprimirBloco('2 — ALINHAMENTO DE ESCOPO',B.b2.campos);
+  imprimirBloco('3 — MOMENTO ATUAL & VISÃO',B.b3.campos);
+  t+='────────────────────────────────────────────────\n';
+  t+=`4 — SOBRE O NEGÓCIO (${nicho.label.toUpperCase()})\n`;
+  t+='────────────────────────────────────────────────\n';
+  nicho.secoes.forEach(s=>{t+=`\n[ ${s.titulo} ]\n`;s.campos.forEach(c=>{t+=`${c.label}\n→ ${respostas[c.id]||'(não respondido)'}\n\n`;});});
+  imprimirBloco('5 — DIAGNÓSTICO ATUAL',B.b5.campos);
+  imprimirBloco('6 — VISUAL & INFORMAÇÕES ADICIONAIS',B.b6.campos);
+  imprimirBloco('7 — PERSONALIDADE DA MARCA',B.b7.campos);
+  t+='════════════════════════════════════════════════\n  Fim do documento\n════════════════════════════════════════════════\n';
+  return t;
+}
+
+function mostrarLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
+
+// CALLBACK OAUTH
+(function(){
+  if(window.location.hash&&window.location.hash.includes('access_token')){
+    const p=new URLSearchParams(window.location.hash.slice(1));
+    const token=p.get('access_token');
+    if(token){
+      sessionStorage.setItem('gdrive_token',token);
+      const nicho=sessionStorage.getItem('form_nicho');
+      const resp=sessionStorage.getItem('form_respostas');
+      if(nicho&&resp){
+        nichoAtual=nicho;
+        respostas=JSON.parse(resp);
+        window.history.replaceState({},'',window.location.pathname);
+        mostrarLoading(true);
+        fazerUpload(token);
+        return;
+      }
+    }
+  }
+})();
+</script>
+</body>
+</html>
