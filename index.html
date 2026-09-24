@@ -130,7 +130,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 .btn-enviar:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
 
 /* SUCESSO */
-#successScreen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:transparent;text-align:center;}
+#successScreen{display:none;position:fixed;inset:0;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:var(--bg);text-align:center;z-index:500;overflow-y:auto;}
 .success-logo{font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(36px,8vw,72px);color:var(--br);letter-spacing:-.03em;line-height:1;margin-bottom:24px;opacity:0;transform:translateY(30px);transition:all .7s ease;}
 .success-logo.show{opacity:1;transform:translateY(0);}
 .success-msg{font-size:clamp(15px,2vw,18px);color:var(--gray);font-weight:400;max-width:480px;line-height:1.8;opacity:0;transform:translateY(20px);transition:all .7s ease .3s;}
@@ -827,33 +827,28 @@ async function fazerUpload(token){
  throw new Error('Nenhuma imagem foi enviada');
  }
  mostrarLoading(false);
+ if(window._limparSessao)window._limparSessao();
+ limparArquivosDB();
+ localStorage.removeItem('sp_retry_oauth');
+ localStorage.removeItem('sp_form_respostas');
+ localStorage.removeItem('sp_form_nicho');
+ localStorage.removeItem('sp_gdrive_token');
+ window.scrollTo(0,0);
  document.getElementById('formScreen').style.display='none';
  const ss=document.getElementById('successScreen');
  ss.style.display='flex';
  setTimeout(()=>{
  document.getElementById('successLogo').classList.add('show');
  document.getElementById('successDivider').classList.add('show');
-    if(window._limparSessao)window._limparSessao();
-    limparArquivosDB();
-    localStorage.removeItem('sp_retry_oauth');
-    localStorage.removeItem('sp_form_respostas');
-    localStorage.removeItem('sp_form_nicho');
-    localStorage.removeItem('sp_gdrive_token');
  document.getElementById('successMsg').classList.add('show');
  },100);
  }catch(e){
+ console.error('Erro no envio:',e);
  mostrarLoading(false);
  document.getElementById('btnEnviar').disabled=false;
- var jaTentou=localStorage.getItem('sp_retry_oauth');
- if(!jaTentou){
- localStorage.setItem('sp_retry_oauth','1');
- localStorage.removeItem('sp_gdrive_token');
- await iniciarOAuth();
- }else{
  localStorage.removeItem('sp_retry_oauth');
  localStorage.removeItem('sp_gdrive_token');
- alert('Nao foi possivel enviar. Verifique sua conexao e tente novamente.');
- }
+ alert('Nao foi possivel enviar. Verifique sua conexao e clique em Enviar novamente.');
  }
 }
 
@@ -948,6 +943,10 @@ if(!_processarCallbackOAuth()){
 document.addEventListener('DOMContentLoaded',function(){
  setTimeout(function(){
  if(window._oauthEmAndamento) return;
+ // Se chegou aqui sem um callback OAuth ativo, qualquer residuo de
+ // tentativa anterior travada (retry flag, token velho) deve ser limpo
+ // para nao afetar o proximo envio.
+ localStorage.removeItem('sp_retry_oauth');
  if(window._restaurarSessao) window._restaurarSessao();
  },200);
 });
