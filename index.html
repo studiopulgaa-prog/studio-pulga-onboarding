@@ -887,15 +887,17 @@ function gerarConteudo(){
 function mostrarLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
 
 // CALLBACK OAUTH
+window._oauthEmAndamento=false;
 (function(){
  if(window.location.hash&&window.location.hash.includes('access_token')){
  const p=new URLSearchParams(window.location.hash.slice(1));
  const token=p.get('access_token');
  if(token){
- sessionStorage.setItem('gdrive_token',token);
  const nicho=sessionStorage.getItem('form_nicho');
  const resp=sessionStorage.getItem('form_respostas');
  if(nicho&&resp){
+ window._oauthEmAndamento=true;
+ sessionStorage.setItem('gdrive_token',token);
  nichoAtual=nicho;
  respostas=JSON.parse(resp);
  window.history.replaceState({},'',window.location.pathname);
@@ -904,13 +906,15 @@ function mostrarLoading(v){document.getElementById('loadingOverlay').style.displ
  arquivos=arqs||[];
  fazerUpload(token);
  });
- return;
  }
  }
  }
 })();
-// Restaurar sessão ao carregar
-document.addEventListener('DOMContentLoaded',function(){if(window._restaurarSessao)window._restaurarSessao();});
+// Restaurar sessão ao carregar (apenas se nao ha upload OAuth em andamento)
+document.addEventListener('DOMContentLoaded',function(){
+ if(window._oauthEmAndamento) return;
+ if(window._restaurarSessao) window._restaurarSessao();
+});
 </script>
 </body>
 </html>
