@@ -271,7 +271,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 <script>
 const CLIENT_ID='19788603553-01os3u2f30a6infut0slflqfdknc546m.apps.googleusercontent.com';
 const FOLDER_ID='1M4uhyUFKK8FqIhr-S0XVeYQ8n1n6TgVI';
-const REDIRECT_URI='https://formulario.studiopulga.com.br/oauth/callback';
+const REDIRECT_URI='https://formulario.studiopulga.com.br/';
 const SCOPE='https://www.googleapis.com/auth/drive.file';
 const MAX_FILES=4;
 const MAX_MB=10;
@@ -750,7 +750,7 @@ function atualizarProgresso(){
 }
 
 // OAUTH
-function getToken(){return sessionStorage.getItem('gdrive_token');}
+function getToken(){return localStorage.getItem('sp_gdrive_token');}
 
 function coletarRespostas(){
  respostas={};
@@ -769,8 +769,8 @@ function coletarRespostas(){
 
 async function iniciarOAuth(){
  coletarRespostas();
- sessionStorage.setItem('form_respostas',JSON.stringify(respostas));
- sessionStorage.setItem('form_nicho',nichoAtual);
+ localStorage.setItem('sp_form_respostas',JSON.stringify(respostas));
+ localStorage.setItem('sp_form_nicho',nichoAtual);
  await salvarArquivosDB();
  const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:REDIRECT_URI,response_type:'token',scope:SCOPE,prompt:'consent'});
  window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
@@ -835,20 +835,23 @@ async function fazerUpload(token){
  document.getElementById('successDivider').classList.add('show');
     if(window._limparSessao)window._limparSessao();
     limparArquivosDB();
-    sessionStorage.removeItem('sp_retry_oauth');
+    localStorage.removeItem('sp_retry_oauth');
+    localStorage.removeItem('sp_form_respostas');
+    localStorage.removeItem('sp_form_nicho');
+    localStorage.removeItem('sp_gdrive_token');
  document.getElementById('successMsg').classList.add('show');
  },100);
  }catch(e){
  mostrarLoading(false);
  document.getElementById('btnEnviar').disabled=false;
- var jaTentou=sessionStorage.getItem('sp_retry_oauth');
+ var jaTentou=localStorage.getItem('sp_retry_oauth');
  if(!jaTentou){
- sessionStorage.setItem('sp_retry_oauth','1');
- sessionStorage.removeItem('gdrive_token');
+ localStorage.setItem('sp_retry_oauth','1');
+ localStorage.removeItem('sp_gdrive_token');
  await iniciarOAuth();
  }else{
- sessionStorage.removeItem('sp_retry_oauth');
- sessionStorage.removeItem('gdrive_token');
+ localStorage.removeItem('sp_retry_oauth');
+ localStorage.removeItem('sp_gdrive_token');
  alert('Nao foi possivel enviar. Verifique sua conexao e tente novamente.');
  }
  }
@@ -916,11 +919,11 @@ function _processarCallbackOAuth(){
  var p=new URLSearchParams(hash.slice(1));
  var token=p.get('access_token');
  if(!token) return false;
- var nicho=sessionStorage.getItem('form_nicho');
- var resp=sessionStorage.getItem('form_respostas');
+ var nicho=localStorage.getItem('sp_form_nicho');
+ var resp=localStorage.getItem('sp_form_respostas');
  if(!nicho||!resp) return false;
  window._oauthEmAndamento=true;
- sessionStorage.setItem('gdrive_token',token);
+ localStorage.setItem('sp_gdrive_token',token);
  nichoAtual=nicho;
  respostas=JSON.parse(resp);
  window.history.replaceState({},'',window.location.pathname);
