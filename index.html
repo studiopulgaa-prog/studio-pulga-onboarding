@@ -907,16 +907,18 @@ function gerarConteudo(){
 
 function mostrarLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
 
-// CALLBACK OAUTH
+// CALLBACK OAUTH ~ funcao reutilizavel, chamada com retry para evitar race condition
+// de timing onde window.location.hash ainda nao esta populado no momento sincrono
 window._oauthEmAndamento=false;
-(function(){
- if(window.location.hash&&window.location.hash.includes('access_token')){
- const p=new URLSearchParams(window.location.hash.slice(1));
- const token=p.get('access_token');
- if(token){
- const nicho=sessionStorage.getItem('form_nicho');
- const resp=sessionStorage.getItem('form_respostas');
- if(nicho&&resp){
+function _processarCallbackOAuth(){
+ var hash=window.location.hash;
+ if(!hash||!hash.includes('access_token')) return false;
+ var p=new URLSearchParams(hash.slice(1));
+ var token=p.get('access_token');
+ if(!token) return false;
+ var nicho=sessionStorage.getItem('form_nicho');
+ var resp=sessionStorage.getItem('form_respostas');
+ if(!nicho||!resp) return false;
  window._oauthEmAndamento=true;
  sessionStorage.setItem('gdrive_token',token);
  nichoAtual=nicho;
@@ -927,14 +929,23 @@ window._oauthEmAndamento=false;
  arquivos=arqs||[];
  fazerUpload(token);
  });
+ return true;
+}
+// Tenta imediatamente; se o hash ainda nao estiver disponivel (race condition
+// observada em navegacoes rapidas pos-redirect), tenta de novo em micro-delays
+if(!_processarCallbackOAuth()){
+ setTimeout(function(){
+ if(!_processarCallbackOAuth()){
+ setTimeout(_processarCallbackOAuth,150);
  }
- }
- }
-})();
+ },30);
+}
 // Restaurar sessão ao carregar (apenas se nao ha upload OAuth em andamento)
 document.addEventListener('DOMContentLoaded',function(){
+ setTimeout(function(){
  if(window._oauthEmAndamento) return;
  if(window._restaurarSessao) window._restaurarSessao();
+ },200);
 });
 </script>
 </body>
