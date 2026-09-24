@@ -280,57 +280,40 @@ const SENHAS={'Construtora00':'Construtora','Planejados01':'Loja de Planejados',
 
 let nichoAtual='',respostas={},arquivos=[],anivCount=1;
 
-// ── IndexedDB para persistir arquivos através do redirect OAuth ──
-function abrirDB(){
-  return new Promise((res,rej)=>{
-    const req=indexedDB.open('sp_onboarding_files',2);
-    req.onupgradeneeded=e=>{
-      var db=e.target.result;
-      if(!db.objectStoreNames.contains('files')) db.createObjectStore('files');
-    };
-    req.onsuccess=e=>res(e.target.result);
-    req.onerror=e=>rej(e);
-  });
-}
+// ── localStorage com base64 para persistir arquivos pelo redirect OAuth ──
+// Substitui IndexedDB: Safari iOS (ITP) zera IndexedDB ao navegar cross-origin.
+// localStorage sobrevive ao redirect OAuth em todos os navegadores/iOS.
 async function salvarArquivosDB(){
   try{
     var itens=await Promise.all(arquivos.map(function(f){
-      return f.arrayBuffer().then(function(buf){
-        return {name:f.name,type:f.type||'application/octet-stream',size:f.size,buf:buf};
+      return new Promise(function(res,rej){
+        var reader=new FileReader();
+        reader.onload=function(){res({name:f.name,type:f.type||'application/octet-stream',size:f.size,b64:reader.result});};
+        reader.onerror=rej;
+        reader.readAsDataURL(f);
       });
     }));
-    var db=await abrirDB();
-    return new Promise(function(res){
-      var tx=db.transaction('files','readwrite');
-      tx.objectStore('files').put(itens,'pendentes');
-      tx.oncomplete=function(){res(true);};
-      tx.onerror=function(){res(false);};
-      tx.onabort=function(){res(false);};
-    });
+    localStorage.setItem('sp_files_pendentes',JSON.stringify(itens));
+    return true;
   }catch(e){console.error('salvarArquivosDB falhou',e);return false;}
 }
 async function recuperarArquivosDB(){
   try{
-    var db=await abrirDB();
-    var itens=await new Promise(function(res){
-      var tx=db.transaction('files','readonly');
-      var req=tx.objectStore('files').get('pendentes');
-      req.onsuccess=function(){res(req.result||[]);};
-      req.onerror=function(){res([]);};
-    });
+    var raw=localStorage.getItem('sp_files_pendentes');
+    if(!raw) return [];
+    var itens=JSON.parse(raw);
     return itens.map(function(it){
-      var blob=new Blob([it.buf],{type:it.type});
-      var file=new File([blob],it.name,{type:it.type});
-      return file;
+      var arr=it.b64.split(',');
+      var bstr=atob(arr[1]);
+      var n=bstr.length;
+      var u8=new Uint8Array(n);
+      for(var i=0;i<n;i++) u8[i]=bstr.charCodeAt(i);
+      return new File([new Blob([u8],{type:it.type})],it.name,{type:it.type});
     });
   }catch(e){console.error('recuperarArquivosDB falhou',e);return [];}
 }
 async function limparArquivosDB(){
-  try{
-    var db=await abrirDB();
-    var tx=db.transaction('files','readwrite');
-    tx.objectStore('files').delete('pendentes');
-  }catch(e){}
+  localStorage.removeItem('sp_files_pendentes');
 }
 
 // Exemplos para tooltips ~ baseados no doc fictício
@@ -833,6 +816,7 @@ async function fazerUpload(token){
  localStorage.removeItem('sp_form_respostas');
  localStorage.removeItem('sp_form_nicho');
  localStorage.removeItem('sp_gdrive_token');
+ localStorage.removeItem('sp_files_pendentes');
  window.scrollTo(0,0);
  document.getElementById('formScreen').style.display='none';
  const ss=document.getElementById('successScreen');
@@ -848,6 +832,7 @@ async function fazerUpload(token){
  document.getElementById('btnEnviar').disabled=false;
  localStorage.removeItem('sp_retry_oauth');
  localStorage.removeItem('sp_gdrive_token');
+ localStorage.removeItem('sp_files_pendentes');
  alert('Nao foi possivel enviar. Verifique sua conexao e clique em Enviar novamente.');
  }
 }
@@ -947,6 +932,7 @@ document.addEventListener('DOMContentLoaded',function(){
  // tentativa anterior travada (retry flag, token velho) deve ser limpo
  // para nao afetar o proximo envio.
  localStorage.removeItem('sp_retry_oauth');
+ localStorage.removeItem('sp_files_pendentes');
  if(window._restaurarSessao) window._restaurarSessao();
  },200);
 });
