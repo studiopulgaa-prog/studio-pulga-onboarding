@@ -766,21 +766,39 @@ async function enviarFormulario(){
  await fazerUpload(token);
 }
 
+async function obterOuCriarPasta(token,nome){
+  const q=encodeURIComponent(`'${FOLDER_ID}' in parents and name='${nome.replace(/'/g,"\\'")}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
+  const rs=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,{headers:{'Authorization':'Bearer '+token}});
+  if(rs.ok){
+    const j=await rs.json();
+    if(j.files&&j.files.length>0) return j.files[0].id;
+  }
+  const meta={name:nome,mimeType:'application/vnd.google-apps.folder',parents:[FOLDER_ID]};
+  const rc=await fetch('https://www.googleapis.com/drive/v3/files',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(meta)});
+  if(!rc.ok) throw new Error('Falha ao criar pasta');
+  const jc=await rc.json();
+  return jc.id;
+}
+
 async function fazerUpload(token){
  mostrarLoading(true);
  document.getElementById('btnEnviar').disabled=true;
  try{
- const nome=`Onboarding ~ ${respostas['nome_empresa']||'Cliente'} ~ ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.html`;
- const meta={name:nome,parents:[FOLDER_ID],mimeType:'text/html'};
+ const nomeCliente=(respostas['nome_empresa']||'Cliente').trim();
+ const dataHoje=new Date().toLocaleDateString('pt-BR').replace(/\//g,'_');
+ const nomePasta=`${nomeCliente} ~ ${dataHoje}`;
+ const pastaId=await obterOuCriarPasta(token,nomePasta);
+ const nomeDoc=`Onboarding ~ ${nomeCliente}.html`;
+ const meta={name:nomeDoc,parents:[pastaId],mimeType:'text/html'};
  const form=new FormData();
  form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
  form.append('file',new Blob([gerarConteudo()],{type:'text/html;charset=utf-8'}));
  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
  if(!r.ok) throw new Error('Upload texto falhou');
- // Imagens
+ // Imagens ~ vao para dentro da mesma pasta do cliente
  for(let i=0;i<arquivos.length;i++){
  const f=arquivos[i];
- const mImg={name:`${respostas['nome_empresa']||'Cliente'} ~ Insights ${i+1} ~ ${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}`,parents:[FOLDER_ID]};
+ const mImg={name:`Insights ${i+1} ~ ${f.name}`,parents:[pastaId]};
  const fImg=new FormData();
  fImg.append('metadata',new Blob([JSON.stringify(mImg)],{type:'application/json'}));
  fImg.append('file',f);
