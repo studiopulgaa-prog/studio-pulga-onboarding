@@ -733,7 +733,17 @@ function atualizarProgresso(){
 }
 
 // OAUTH
-function getToken(){return localStorage.getItem('sp_gdrive_token');}
+function getToken(){
+ var token=localStorage.getItem('sp_gdrive_token');
+ var exp=localStorage.getItem('sp_gdrive_token_exp');
+ if(!token) return null;
+ if(exp && Date.now()>parseInt(exp)){
+   localStorage.removeItem('sp_gdrive_token');
+   localStorage.removeItem('sp_gdrive_token_exp');
+   return null;
+ }
+ return token;
+}
 
 function coletarRespostas(){
  respostas={};
@@ -769,6 +779,7 @@ async function enviarFormulario(){
 async function obterOuCriarPasta(token,nome){
   const q=encodeURIComponent(`'${FOLDER_ID}' in parents and name='${nome.replace(/'/g,"\\'")}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
   const rs=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,{headers:{'Authorization':'Bearer '+token}});
+  if(rs.status===401) throw new Error('401 token expirado');
   if(rs.ok){
     const j=await rs.json();
     if(j.files&&j.files.length>0) return j.files[0].id;
@@ -794,7 +805,8 @@ async function fazerUpload(token){
  form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
  form.append('file',new Blob([gerarConteudo()],{type:'text/html;charset=utf-8'}));
  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
- if(!r.ok) throw new Error('Upload texto falhou');
+ if(r.status===401) throw new Error('401 token expirado');
+ if(!r.ok) throw new Error('Upload texto falhou status '+r.status);
  // Imagens ~ vao para dentro da mesma pasta do cliente
  let falhasImg=0;
  for(let i=0;i<arquivos.length;i++){
@@ -816,6 +828,7 @@ async function fazerUpload(token){
  localStorage.removeItem('sp_form_respostas');
  localStorage.removeItem('sp_form_nicho');
  localStorage.removeItem('sp_gdrive_token');
+ localStorage.removeItem('sp_gdrive_token_exp');
  localStorage.removeItem('sp_files_pendentes');
  window.scrollTo(0,0);
  document.getElementById('formScreen').style.display='none';
@@ -830,10 +843,17 @@ async function fazerUpload(token){
  console.error('Erro no envio:',e);
  mostrarLoading(false);
  document.getElementById('btnEnviar').disabled=false;
- localStorage.removeItem('sp_retry_oauth');
  localStorage.removeItem('sp_gdrive_token');
+ localStorage.removeItem('sp_gdrive_token_exp');
+ localStorage.removeItem('sp_retry_oauth');
  localStorage.removeItem('sp_files_pendentes');
- alert('Nao foi possivel enviar. Verifique sua conexao e clique em Enviar novamente.');
+ // Se for erro de autenticação (401), relança OAuth automaticamente
+ var msg=e.message||'';
+ if(msg.includes('401')||msg.includes('auth')||msg.includes('token')){
+   await iniciarOAuth();
+ } else {
+   alert('Nao foi possivel enviar. Verifique sua conexao e tente novamente.');
+ }
  }
 }
 
@@ -905,6 +925,7 @@ function _processarCallbackOAuth(){
  window._oauthEmAndamento=true;
  var lg=document.getElementById('loginScreen'); if(lg) lg.style.display='none';
  localStorage.setItem('sp_gdrive_token',token);
+ localStorage.setItem('sp_gdrive_token_exp', String(Date.now() + 55*60*1000));
  nichoAtual=nicho;
  respostas=JSON.parse(resp);
  window.history.replaceState({},'',window.location.pathname);
