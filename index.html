@@ -168,16 +168,16 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
     d.anivN=[...document.querySelectorAll('.aniv-nome')].map(function(i){return i.value;});
     d.anivD=[...document.querySelectorAll('.aniv-data')].map(function(i){return i.value;});
     d.anivExtra=document.querySelectorAll('.aniv-row').length-1;
-    try{localStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}
+    try{sessionStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}
   };
 
   window._restaurarSessao=function(){
     try{
-      var raw=localStorage.getItem(SKEY);
+      var raw=sessionStorage.getItem(SKEY);
       if(!raw) return false;
       var d=JSON.parse(raw);
       if(!d||!d.nicho||!SENHAS[d.nicho]) return false;
-      if(Date.now()-d.ts>86400000){localStorage.removeItem(SKEY);return false;}
+      if(Date.now()-d.ts>7200000){sessionStorage.removeItem(SKEY);return false;}
       nichoAtual=d.nicho;
       document.getElementById('loginScreen').style.display='none';
       var fs=document.getElementById('formScreen');
@@ -209,7 +209,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
   };
 
   window._limparSessao=function(){
-    try{localStorage.removeItem(SKEY);}catch(e){}
+    try{sessionStorage.removeItem(SKEY);}catch(e){}
   };
 
   setInterval(function(){if(nichoAtual)window._salvarSessao();},4000);
@@ -814,14 +814,22 @@ async function fazerUpload(token){
  document.getElementById('successDivider').classList.add('show');
     if(window._limparSessao)window._limparSessao();
     limparArquivosDB();
+    sessionStorage.removeItem('sp_retry_oauth');
  document.getElementById('successMsg').classList.add('show');
  },100);
  }catch(e){
  mostrarLoading(false);
  document.getElementById('btnEnviar').disabled=false;
- // Token pode ter expirado ~ tenta renovar
+ var jaTentou=sessionStorage.getItem('sp_retry_oauth');
+ if(!jaTentou){
+ sessionStorage.setItem('sp_retry_oauth','1');
  sessionStorage.removeItem('gdrive_token');
- iniciarOAuth();
+ await iniciarOAuth();
+ }else{
+ sessionStorage.removeItem('sp_retry_oauth');
+ sessionStorage.removeItem('gdrive_token');
+ alert('Nao foi possivel enviar. Verifique sua conexao e tente novamente.');
+ }
  }
 }
 
