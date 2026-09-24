@@ -900,7 +900,10 @@ function mostrarLoading(v){document.getElementById('loadingOverlay').style.displ
  respostas=JSON.parse(resp);
  window.history.replaceState({},'',window.location.pathname);
  mostrarLoading(true);
+ recuperarArquivosDB().then(function(arqs){
+ arquivos=arqs||[];
  fazerUpload(token);
+ });
  return;
  }
  }
