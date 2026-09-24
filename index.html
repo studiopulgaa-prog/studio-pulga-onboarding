@@ -283,35 +283,52 @@ let nichoAtual='',respostas={},arquivos=[],anivCount=1;
 // ── IndexedDB para persistir arquivos através do redirect OAuth ──
 function abrirDB(){
   return new Promise((res,rej)=>{
-    const req=indexedDB.open('sp_onboarding_files',1);
-    req.onupgradeneeded=e=>{ e.target.result.createObjectStore('files'); };
+    const req=indexedDB.open('sp_onboarding_files',2);
+    req.onupgradeneeded=e=>{
+      var db=e.target.result;
+      if(!db.objectStoreNames.contains('files')) db.createObjectStore('files');
+    };
     req.onsuccess=e=>res(e.target.result);
     req.onerror=e=>rej(e);
   });
 }
 async function salvarArquivosDB(){
   try{
-    const db=await abrirDB();
-    const tx=db.transaction('files','readwrite');
-    tx.objectStore('files').put(arquivos,'pendentes');
-    return new Promise(res=>{tx.oncomplete=()=>res(true);tx.onerror=()=>res(false);});
-  }catch(e){return false;}
+    var itens=await Promise.all(arquivos.map(function(f){
+      return f.arrayBuffer().then(function(buf){
+        return {name:f.name,type:f.type||'application/octet-stream',size:f.size,buf:buf};
+      });
+    }));
+    var db=await abrirDB();
+    return new Promise(function(res){
+      var tx=db.transaction('files','readwrite');
+      tx.objectStore('files').put(itens,'pendentes');
+      tx.oncomplete=function(){res(true);};
+      tx.onerror=function(){res(false);};
+      tx.onabort=function(){res(false);};
+    });
+  }catch(e){console.error('salvarArquivosDB falhou',e);return false;}
 }
 async function recuperarArquivosDB(){
   try{
-    const db=await abrirDB();
-    const tx=db.transaction('files','readonly');
-    const req=tx.objectStore('files').get('pendentes');
-    return new Promise(res=>{
-      req.onsuccess=()=>res(req.result||[]);
-      req.onerror=()=>res([]);
+    var db=await abrirDB();
+    var itens=await new Promise(function(res){
+      var tx=db.transaction('files','readonly');
+      var req=tx.objectStore('files').get('pendentes');
+      req.onsuccess=function(){res(req.result||[]);};
+      req.onerror=function(){res([]);};
     });
-  }catch(e){return [];}
+    return itens.map(function(it){
+      var blob=new Blob([it.buf],{type:it.type});
+      var file=new File([blob],it.name,{type:it.type});
+      return file;
+    });
+  }catch(e){console.error('recuperarArquivosDB falhou',e);return [];}
 }
 async function limparArquivosDB(){
   try{
-    const db=await abrirDB();
-    const tx=db.transaction('files','readwrite');
+    var db=await abrirDB();
+    var tx=db.transaction('files','readwrite');
     tx.objectStore('files').delete('pendentes');
   }catch(e){}
 }
@@ -796,14 +813,18 @@ async function fazerUpload(token){
  const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
  if(!r.ok) throw new Error('Upload texto falhou');
  // Imagens ~ vao para dentro da mesma pasta do cliente
+ let falhasImg=0;
  for(let i=0;i<arquivos.length;i++){
  const f=arquivos[i];
  const mImg={name:`Insights ${i+1} ~ ${f.name}`,parents:[pastaId]};
  const fImg=new FormData();
  fImg.append('metadata',new Blob([JSON.stringify(mImg)],{type:'application/json'}));
- fImg.append('file',f);
+ fImg.append('file',f,f.name);
  const ri=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:fImg});
- if(!ri.ok) console.warn('Imagem '+i+' falhou');
+ if(!ri.ok){falhasImg++;console.error('Imagem '+i+' falhou',await ri.text());}
+ }
+ if(falhasImg>0&&falhasImg===arquivos.length&&arquivos.length>0){
+ throw new Error('Nenhuma imagem foi enviada');
  }
  mostrarLoading(false);
  document.getElementById('formScreen').style.display='none';
