@@ -1,0 +1,58 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio Pulga ~ Envios do Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700;900&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--br:#6E2C14;--bg:#F4EADD;--card:#FBF6EF;--line:#EAD8C5;--gray:#9a7b6a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--br);font-family:'Outfit',Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:32px 18px 80px}
+h1{font-family:'League Spartan',Arial,sans-serif;font-weight:900;letter-spacing:.03em;margin:0 0 4px}
+.sub{color:var(--gray);margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+input{width:100%;padding:14px;border-radius:10px;border:1.5px solid var(--line);font:inherit;background:#fff}
+button,.btn{display:inline-block;padding:10px 16px;border-radius:10px;border:none;background:var(--br);color:var(--bg);font:600 14px 'Outfit',Arial,sans-serif;cursor:pointer;text-decoration:none;margin:6px 6px 0 0}
+.btn-out{background:transparent;color:var(--br);border:1.5px solid var(--br)}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
+.ok{background:#dff1e1;color:#256b33}.pend{background:#fbeccd;color:#8a5a00}.err{background:#f8dcd9;color:#a3241b}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--gray);font-size:13px}.imgs a{font-size:13px;color:var(--br);margin-right:10px}
+#driveBox{border-left:5px solid var(--br)}
+</style></head><body><div class="wrap">
+<h1>STUDIO PULGA</h1><div class="sub">Envios do formulario de onboarding</div>
+<div id="login" class="card"><input id="senha" type="password" placeholder="Senha do painel"><button onclick="entrar()">Entrar</button><div id="lerr" class="muted"></div></div>
+<div id="painel" style="display:none">
+ <div id="driveBox" class="card"></div>
+ <div class="row" style="margin-bottom:10px"><div class="muted" id="total"></div><div><button class="btn-out" onclick="carregar()">Atualizar</button><button onclick="sync()">Enviar pendentes ao Drive</button></div></div>
+ <div id="lista"></div>
+</div></div>
+<script>
+var SENHA='';
+function api(body){return fetch('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({senha:SENHA},body))}).then(function(r){return r.json();});}
+function entrar(){SENHA=document.getElementById('senha').value.trim();carregar();}
+document.getElementById('senha').addEventListener('keydown',function(e){if(e.key==='Enter')entrar();});
+var ENVIOS=[];
+function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function carregar(){
+ api({acao:'listar'}).then(function(j){
+  if(!j.ok){document.getElementById('lerr').textContent=j.erro==='senha'?'Senha incorreta.':'Erro: '+j.erro;return;}
+  sessionStorage.setItem('sp_admin',SENHA);
+  document.getElementById('login').style.display='none';document.getElementById('painel').style.display='block';
+  document.getElementById('driveBox').innerHTML=j.driveConectado
+   ?'<b>Google Drive conectado.</b><div class="muted">Cada envio vai automaticamente para a pasta Formularios Clientes Studio.</div><a class="btn btn-out" href="/api/drive-connect?senha='+encodeURIComponent(SENHA)+'">Reconectar</a>'
+   :'<b>Google Drive ainda nao conectado.</b><div class="muted">Os envios estao salvos aqui com seguranca. Conecte uma vez com a conta dona da pasta para eles irem ao Drive automaticamente.</div><a class="btn" href="/api/drive-connect?senha='+encodeURIComponent(SENHA)+'">Conectar Google Drive</a>';
+  ENVIOS=j.envios;document.getElementById('total').textContent=j.envios.length+' envio(s)';
+  document.getElementById('lista').innerHTML=j.envios.map(function(e,i){
+   var st=e.drive_status==='ok'?'<span class="tag ok">No Drive</span>':(e.drive_status==='erro'?'<span class="tag err">Erro no Drive</span>':'<span class="tag pend">Salvo ~ aguardando Drive</span>');
+   return '<div class="card"><div class="row"><div><b>'+esc(e.empresa)+'</b> <span class="muted">~ '+esc(e.nicho)+'</span><div class="muted">'+new Date(e.criado_em).toLocaleString('pt-BR')+'</div></div>'+st+'</div>'
+    +(e.drive_erro&&e.drive_status!=='ok'?'<div class="muted">'+esc(e.drive_erro)+'</div>':'')
+    +'<div class="imgs" style="margin-top:8px">'+(e.imagens.length?e.imagens.map(function(m,k){return '<a target="_blank" href="'+m.url+'">Imagem '+(k+1)+'</a>';}).join(''):'<span class="muted">Sem imagens</span>')+'</div>'
+    +'<button class="btn-out" onclick="verDoc('+i+')">Ver respostas</button><button class="btn-out" onclick="sync(\''+e.id+'\')">Enviar ao Drive</button></div>';
+  }).join('')||'<div class="card muted">Nenhum envio ainda.</div>';
+ });
+}
+function verDoc(i){var w=window.open('','_blank');w.document.write(ENVIOS[i].doc_html);w.document.close();}
+function sync(id){api({acao:'sync',id:id}).then(function(j){
+ if(!j.ok){alert('Erro: '+j.erro);return;}
+ var f=j.resultados.filter(function(r){return !r.ok;});
+ alert(j.resultados.length?(j.resultados.length-f.length)+' enviado(s) ao Drive.'+(f.length?'\nFalhas: '+f.map(function(r){return r.empresa+': '+r.erro;}).join('\n'):''):'Nada pendente.');carregar();});}
+var s=sessionStorage.getItem('sp_admin');if(s){SENHA=s;carregar();}
+</script></body></html>
