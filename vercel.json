@@ -1,1 +1,8 @@
-{"rewrites":[{"source":"/oauth/callback","destination":"/index.html"},{"source":"/(.*)", "destination":"/index.html"}]}
+{
+  "functions": { "api/*.js": { "maxDuration": 60 } },
+  "rewrites": [
+    { "source": "/oauth/callback", "destination": "/api/drive-connect" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/((?!api/|admin).*)", "destination": "/index.html" }
+  ]
+}
