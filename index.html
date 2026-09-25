@@ -168,16 +168,21 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
     d.anivN=[...document.querySelectorAll('.aniv-nome')].map(function(i){return i.value;});
     d.anivD=[...document.querySelectorAll('.aniv-data')].map(function(i){return i.value;});
     d.anivExtra=document.querySelectorAll('.aniv-row').length-1;
-    try{sessionStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}
+    try{localStorage.setItem(SKEY,JSON.stringify(d));}catch(e){}
   };
 
   window._restaurarSessao=function(){
     try{
-      var raw=sessionStorage.getItem(SKEY);
+      var raw=localStorage.getItem(SKEY)||sessionStorage.getItem(SKEY);
+      if(!raw){
+        // Recupera respostas de tentativas antigas (versao com login Google)
+        var oldR=localStorage.getItem('sp_form_respostas'), oldN=localStorage.getItem('sp_form_nicho');
+        if(oldR&&oldN){ try{var o=JSON.parse(oldR); raw=JSON.stringify({nicho:oldN,campos:o,radios:o,anivN:[],anivD:[],anivExtra:0,ts:Date.now()});}catch(e){} }
+      }
       if(!raw) return false;
       var d=JSON.parse(raw);
       if(!d||!d.nicho||!SENHAS[d.nicho]) return false;
-      if(Date.now()-d.ts>7200000){sessionStorage.removeItem(SKEY);return false;}
+      if(Date.now()-d.ts>14*86400000){localStorage.removeItem(SKEY);return false;}
       nichoAtual=d.nicho;
       document.getElementById('loginScreen').style.display='none';
       var fs=document.getElementById('formScreen');
@@ -209,7 +214,7 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
   };
 
   window._limparSessao=function(){
-    try{sessionStorage.removeItem(SKEY);}catch(e){}
+    try{localStorage.removeItem(SKEY);sessionStorage.removeItem(SKEY);['sp_form_respostas','sp_form_nicho','sp_files_pendentes','sp_gdrive_token','sp_gdrive_token_exp','sp_retry_oauth'].forEach(function(k){localStorage.removeItem(k);});}catch(e){}
   };
 
   setInterval(function(){if(nichoAtual)window._salvarSessao();},4000);
@@ -269,52 +274,14 @@ body{background:var(--bg);font-family:'Outfit',sans-serif;font-weight:500;color:
 </div>
 
 <script>
-const CLIENT_ID='19788603553-01os3u2f30a6infut0slflqfdknc546m.apps.googleusercontent.com';
-const FOLDER_ID='1M4uhyUFKK8FqIhr-S0XVeYQ8n1n6TgVI';
-const REDIRECT_URI='https://formulario.studiopulga.com.br/oauth/callback';
-const SCOPE='https://www.googleapis.com/auth/drive.file';
+const SUPA='https://ixclkelqjpfkucejbzuq.supabase.co';
+const ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4Y2xrZWxxanBma3VjZWpienVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NzM5NTAsImV4cCI6MjA5NjA0OTk1MH0.VmXA6P-9IS0TsNnh_2ZGBQZQqtqtCrp4CdHGOVIc5zU';
 const MAX_FILES=4;
 const MAX_MB=10;
 
 const SENHAS={'Construtora00':'Construtora','Planejados01':'Loja de Planejados','Construcao02':'Loja de Revestimento','Arq03':'Arquiteto(a)','Eng04':'Engenharia'};
 
 let nichoAtual='',respostas={},arquivos=[],anivCount=1;
-
-// ── localStorage com base64 para persistir arquivos pelo redirect OAuth ──
-// Substitui IndexedDB: Safari iOS (ITP) zera IndexedDB ao navegar cross-origin.
-// localStorage sobrevive ao redirect OAuth em todos os navegadores/iOS.
-async function salvarArquivosDB(){
-  try{
-    var itens=await Promise.all(arquivos.map(function(f){
-      return new Promise(function(res,rej){
-        var reader=new FileReader();
-        reader.onload=function(){res({name:f.name,type:f.type||'application/octet-stream',size:f.size,b64:reader.result});};
-        reader.onerror=rej;
-        reader.readAsDataURL(f);
-      });
-    }));
-    localStorage.setItem('sp_files_pendentes',JSON.stringify(itens));
-    return true;
-  }catch(e){console.error('salvarArquivosDB falhou',e);return false;}
-}
-async function recuperarArquivosDB(){
-  try{
-    var raw=localStorage.getItem('sp_files_pendentes');
-    if(!raw) return [];
-    var itens=JSON.parse(raw);
-    return itens.map(function(it){
-      var arr=it.b64.split(',');
-      var bstr=atob(arr[1]);
-      var n=bstr.length;
-      var u8=new Uint8Array(n);
-      for(var i=0;i<n;i++) u8[i]=bstr.charCodeAt(i);
-      return new File([new Blob([u8],{type:it.type})],it.name,{type:it.type});
-    });
-  }catch(e){console.error('recuperarArquivosDB falhou',e);return [];}
-}
-async function limparArquivosDB(){
-  localStorage.removeItem('sp_files_pendentes');
-}
 
 // Exemplos para tooltips ~ baseados no doc fictício
 const EXEMPLOS={
@@ -732,19 +699,6 @@ function atualizarProgresso(){
  document.getElementById('progressTxt').textContent=Math.min(pct,100)+'% PREENCHIDO';
 }
 
-// OAUTH
-function getToken(){
- var token=localStorage.getItem('sp_gdrive_token');
- var exp=localStorage.getItem('sp_gdrive_token_exp');
- if(!token) return null;
- if(exp && Date.now()>parseInt(exp)){
-   localStorage.removeItem('sp_gdrive_token');
-   localStorage.removeItem('sp_gdrive_token_exp');
-   return null;
- }
- return token;
-}
-
 function coletarRespostas(){
  respostas={};
  document.querySelectorAll('#formConteudo input:not([type=radio]):not([type=file]):not([type=checkbox]),#formConteudo textarea:not(.obs-field textarea)').forEach(el=>{
@@ -760,100 +714,57 @@ function coletarRespostas(){
  respostas['_data']=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 
-async function iniciarOAuth(){
- coletarRespostas();
- localStorage.setItem('sp_form_respostas',JSON.stringify(respostas));
- localStorage.setItem('sp_form_nicho',nichoAtual);
- await salvarArquivosDB();
- const p=new URLSearchParams({client_id:CLIENT_ID,redirect_uri:REDIRECT_URI,response_type:'token',scope:SCOPE,prompt:'consent'});
- window.location.href='https://accounts.google.com/o/oauth2/v2/auth?'+p.toString();
+function _uuid(){
+ if(window.crypto&&crypto.randomUUID) return crypto.randomUUID();
+ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(ch){var r=Math.random()*16|0;return (ch==='x'?r:(r&3|8)).toString(16);});
 }
+function _slug(s){return String(s||'arquivo').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9._-]+/g,'_').slice(-80)||'arquivo';}
+async function _retry(fn,n){var err;for(var i=0;i<n;i++){try{return await fn();}catch(e){err=e;await new Promise(function(r){setTimeout(r,900*(i+1));});}}throw err;}
 
 async function enviarFormulario(){
+ const btn=document.getElementById('btnEnviar');
+ if(btn.disabled) return;
  coletarRespostas();
- const token=getToken();
- if(!token){await iniciarOAuth();return;}
- await fazerUpload(token);
-}
-
-async function obterOuCriarPasta(token,nome){
-  const q=encodeURIComponent(`'${FOLDER_ID}' in parents and name='${nome.replace(/'/g,"\\'")}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);
-  const rs=await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,{headers:{'Authorization':'Bearer '+token}});
-  if(rs.status===401) throw new Error('401 token expirado');
-  if(rs.ok){
-    const j=await rs.json();
-    if(j.files&&j.files.length>0) return j.files[0].id;
-  }
-  const meta={name:nome,mimeType:'application/vnd.google-apps.folder',parents:[FOLDER_ID]};
-  const rc=await fetch('https://www.googleapis.com/drive/v3/files',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(meta)});
-  if(!rc.ok) throw new Error('Falha ao criar pasta');
-  const jc=await rc.json();
-  return jc.id;
-}
-
-async function fazerUpload(token){
+ btn.disabled=true;
  mostrarLoading(true);
- document.getElementById('btnEnviar').disabled=true;
+ const id=_uuid();
  try{
- const nomeCliente=(respostas['nome_empresa']||'Cliente').trim();
- const dataHoje=new Date().toLocaleDateString('pt-BR').replace(/\//g,'_');
- const nomePasta=`${nomeCliente} ~ ${dataHoje}`;
- const pastaId=await obterOuCriarPasta(token,nomePasta);
- const nomeDoc=`Onboarding ~ ${nomeCliente}.html`;
- const meta={name:nomeDoc,parents:[pastaId],mimeType:'text/html'};
- const form=new FormData();
- form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
- form.append('file',new Blob([gerarConteudo()],{type:'text/html;charset=utf-8'}));
- const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:form});
- if(r.status===401) throw new Error('401 token expirado');
- if(!r.ok) throw new Error('Upload texto falhou status '+r.status);
- // Imagens ~ vao para dentro da mesma pasta do cliente
- let falhasImg=0;
- for(let i=0;i<arquivos.length;i++){
- const f=arquivos[i];
- const mImg={name:`Insights ${i+1} ~ ${f.name}`,parents:[pastaId]};
- const fImg=new FormData();
- fImg.append('metadata',new Blob([JSON.stringify(mImg)],{type:'application/json'}));
- fImg.append('file',f,f.name);
- const ri=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Authorization':'Bearer '+token},body:fImg});
- if(!ri.ok){falhasImg++;console.error('Imagem '+i+' falhou',await ri.text());}
- }
- if(falhasImg>0&&falhasImg===arquivos.length&&arquivos.length>0){
- throw new Error('Nenhuma imagem foi enviada');
- }
- mostrarLoading(false);
- if(window._limparSessao)window._limparSessao();
- limparArquivosDB();
- localStorage.removeItem('sp_retry_oauth');
- localStorage.removeItem('sp_form_respostas');
- localStorage.removeItem('sp_form_nicho');
- localStorage.removeItem('sp_gdrive_token');
- localStorage.removeItem('sp_gdrive_token_exp');
- localStorage.removeItem('sp_files_pendentes');
- window.scrollTo(0,0);
- document.getElementById('formScreen').style.display='none';
- const ss=document.getElementById('successScreen');
- ss.style.display='flex';
- setTimeout(()=>{
- document.getElementById('successLogo').classList.add('show');
- document.getElementById('successDivider').classList.add('show');
- document.getElementById('successMsg').classList.add('show');
- },100);
+  const imagens=[];
+  for(let i=0;i<arquivos.length;i++){
+   const f=arquivos[i];
+   const path=id+'/'+(i+1)+'-'+_slug(f.name);
+   const tipo=f.type||'application/octet-stream';
+   await _retry(async function(){
+    const r=await fetch(SUPA+'/storage/v1/object/onboarding/'+path,{method:'POST',headers:{'apikey':ANON,'Authorization':'Bearer '+ANON,'Content-Type':tipo,'x-upsert':'false'},body:f});
+    if(!r.ok){const t=await r.text(); if(!/exist|Duplicate|409/i.test(t+r.status)) throw new Error('imagem '+r.status+' '+t);}
+   },3);
+   imagens.push({path:path,nome:f.name,tipo:tipo,tamanho:f.size});
+  }
+  const row={id:id,empresa:(respostas['nome_empresa']||'Cliente').trim()||'Cliente',nicho:NICHOS[nichoAtual].label,respostas:respostas,doc_html:gerarConteudo(),imagens:imagens};
+  await _retry(async function(){
+   const r=await fetch(SUPA+'/rest/v1/onboarding_envios',{method:'POST',headers:{'apikey':ANON,'Authorization':'Bearer '+ANON,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)});
+   if(!r.ok&&r.status!==409) throw new Error('registro '+r.status+' '+await r.text());
+  },3);
+  try{fetch('/api/sync-drive',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id}),keepalive:true}).catch(function(){});}catch(e){}
+  if(window._limparSessao)window._limparSessao();
+  nichoAtual='';
+  arquivos=[];
+  mostrarLoading(false);
+  window.scrollTo(0,0);
+  document.getElementById('formScreen').style.display='none';
+  const ss=document.getElementById('successScreen');
+  ss.style.display='flex';
+  setTimeout(function(){
+   document.getElementById('successLogo').classList.add('show');
+   document.getElementById('successDivider').classList.add('show');
+   document.getElementById('successMsg').classList.add('show');
+  },100);
  }catch(e){
- console.error('Erro no envio:',e);
- mostrarLoading(false);
- document.getElementById('btnEnviar').disabled=false;
- localStorage.removeItem('sp_gdrive_token');
- localStorage.removeItem('sp_gdrive_token_exp');
- localStorage.removeItem('sp_retry_oauth');
- localStorage.removeItem('sp_files_pendentes');
- // Se for erro de autenticação (401), relança OAuth automaticamente
- var msg=e.message||'';
- if(msg.includes('401')||msg.includes('auth')||msg.includes('token')){
-   await iniciarOAuth();
- } else {
-   alert('Nao foi possivel enviar. Verifique sua conexao e tente novamente.');
- }
+  console.error('Erro no envio:',e);
+  mostrarLoading(false);
+  btn.disabled=false;
+  if(window._salvarSessao)window._salvarSessao();
+  alert('Nao conseguimos enviar agora. Suas respostas continuam salvas neste aparelho. Verifique a internet e toque em Enviar novamente.');
  }
 }
 
@@ -910,52 +821,11 @@ function gerarConteudo(){
 
 function mostrarLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
 
-// CALLBACK OAUTH ~ funcao reutilizavel, chamada com retry para evitar race condition
-// de timing onde window.location.hash ainda nao esta populado no momento sincrono
-window._oauthEmAndamento=false;
-function _processarCallbackOAuth(){
- var hash=window.location.hash;
- if(!hash||!hash.includes('access_token')) return false;
- var p=new URLSearchParams(hash.slice(1));
- var token=p.get('access_token');
- if(!token) return false;
- var nicho=localStorage.getItem('sp_form_nicho');
- var resp=localStorage.getItem('sp_form_respostas');
- if(!nicho||!resp) return false;
- window._oauthEmAndamento=true;
- var lg=document.getElementById('loginScreen'); if(lg) lg.style.display='none';
- localStorage.setItem('sp_gdrive_token',token);
- localStorage.setItem('sp_gdrive_token_exp', String(Date.now() + 55*60*1000));
- nichoAtual=nicho;
- respostas=JSON.parse(resp);
- window.history.replaceState({},'',window.location.pathname);
- mostrarLoading(true);
- recuperarArquivosDB().then(function(arqs){
- arquivos=arqs||[];
- fazerUpload(token);
- });
- return true;
-}
-// Tenta imediatamente; se o hash ainda nao estiver disponivel (race condition
-// observada em navegacoes rapidas pos-redirect), tenta de novo em micro-delays
-if(!_processarCallbackOAuth()){
- setTimeout(function(){
- if(!_processarCallbackOAuth()){
- setTimeout(_processarCallbackOAuth,150);
- }
- },30);
-}
-// Restaurar sessão ao carregar (apenas se nao ha upload OAuth em andamento)
+// Restaurar rascunho ao carregar
 document.addEventListener('DOMContentLoaded',function(){
- setTimeout(function(){
- if(window._oauthEmAndamento) return;
- // Se chegou aqui sem um callback OAuth ativo, qualquer residuo de
- // tentativa anterior travada (retry flag, token velho) deve ser limpo
- // para nao afetar o proximo envio.
- localStorage.removeItem('sp_retry_oauth');
- localStorage.removeItem('sp_files_pendentes');
- if(window._restaurarSessao) window._restaurarSessao();
- },200);
+ ['sp_files_pendentes','sp_gdrive_token','sp_gdrive_token_exp','sp_retry_oauth'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+ if(location.pathname!=='/'&&location.pathname!=='/index.html'){try{history.replaceState({},'','/');}catch(e){}}
+ setTimeout(function(){ if(window._restaurarSessao) window._restaurarSessao(); },100);
 });
 </script>
 </body>
