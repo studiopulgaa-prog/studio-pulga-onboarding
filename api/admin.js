@@ -23,14 +23,19 @@ module.exports = async (req, res) => {
     if (b.acao === 'diagnostico') {
       const token = await accessToken();
       const ui = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', { headers: { Authorization: 'Bearer ' + token } });
-      const userinfo = await ui.json();
+      const userinfo = await ui.json().catch(() => ({}));
       const raiz = await rpc('sp_cfg_get', { p_chave: 'drive_folder_raiz' });
       let raizInfo = null;
       if (raiz) {
         const rr = await fetch(`https://www.googleapis.com/drive/v3/files/${raiz}?fields=id,name,webViewLink,trashed`, { headers: { Authorization: 'Bearer ' + token } });
         raizInfo = await rr.json();
+        // torna acessivel por link, para eliminar duvida de conta
+        await fetch(`https://www.googleapis.com/drive/v3/files/${raiz}/permissions`, {
+          method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: 'reader', type: 'anyone' })
+        }).catch(() => {});
       }
-      return res.json({ ok: true, contaConectada: userinfo.email, pastaRaizId: raiz, pastaRaizInfo: raizInfo });
+      return res.json({ ok: true, contaConectada: userinfo.email || null, pastaRaizId: raiz, pastaRaizInfo: raizInfo });
     }
     res.status(400).json({ ok: false, erro: 'acao' });
   } catch (e) { res.status(500).json({ ok: false, erro: String(e.message || e) }); }
