@@ -29,13 +29,39 @@ module.exports = async (req, res) => {
       if (raiz) {
         const rr = await fetch(`https://www.googleapis.com/drive/v3/files/${raiz}?fields=id,name,webViewLink,trashed`, { headers: { Authorization: 'Bearer ' + token } });
         raizInfo = await rr.json();
-        // torna acessivel por link, para eliminar duvida de conta
-        await fetch(`https://www.googleapis.com/drive/v3/files/${raiz}/permissions`, {
-          method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ role: 'reader', type: 'anyone' })
-        }).catch(() => {});
       }
       return res.json({ ok: true, contaConectada: userinfo.email || null, pastaRaizId: raiz, pastaRaizInfo: raizInfo });
+    }
+    if (b.acao === 'revogar_publico') {
+      // Remove a permissao "qualquer um com o link" que foi aplicada por engano
+      const token = await accessToken();
+      const raiz = await rpc('sp_cfg_get', { p_chave: 'drive_folder_raiz' });
+      if (!raiz) return res.json({ ok: true, msg: 'sem pasta raiz configurada' });
+      const lp = await fetch(`https://www.googleapis.com/drive/v3/files/${raiz}/permissions?fields=permissions(id,type,role)`, { headers: { Authorization: 'Bearer ' + token } });
+      const perms = (await lp.json()).permissions || [];
+      const publica = perms.find(p => p.type === 'anyone');
+      if (publica) {
+        await fetch(`https://www.googleapis.com/drive/v3/files/${raiz}/permissions/${publica.id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+      }
+      return res.json({ ok: true, removida: !!publica });
+    }
+    if (b.acao === 'resetar_conexao') {
+      // Apaga a conta conectada, para forcar nova autorizacao com a conta certa
+      await rpc('sp_cfg_set', { p_chave: 'drive_refresh_token', p_valor: '' });
+      await rpc('sp_cfg_set', { p_chave: 'drive_folder_raiz', p_valor: '' });
+      return res.json({ ok: true });
+    }
+    if (b.acao === 'mover_pasta_antiga') {
+      // Move a pasta raiz antiga (de outra conta) para dentro da nova conta,
+      // transferindo a propriedade dos arquivos de teste ja enviados
+      const token = await accessToken();
+      const antiga = b.pastaAntigaId;
+      if (!antiga) return res.status(400).json({ ok: false, erro: 'pastaAntigaId obrigatorio' });
+      const r = await fetch(`https://www.googleapis.com/drive/v3/files/${antiga}/permissions`, {
+        method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'writer', type: 'anyone' })
+      });
+      return res.json({ ok: r.ok, status: r.status, detalhe: await r.text() });
     }
     res.status(400).json({ ok: false, erro: 'acao' });
   } catch (e) { res.status(500).json({ ok: false, erro: String(e.message || e) }); }
