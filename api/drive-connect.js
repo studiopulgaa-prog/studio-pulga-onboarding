@@ -15,13 +15,19 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'text/html');
     if (!j.refresh_token) return res.status(400).send(page('Erro', 'O Google nao devolveu a autorizacao permanente. Tente conectar de novo. Detalhe: ' + (j.error_description || j.error || 'sem refresh_token')));
     await rpc('sp_cfg_set', { p_chave: 'drive_refresh_token', p_valor: j.refresh_token });
+    let email = 'desconhecido';
+    try {
+      const ui = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', { headers: { Authorization: 'Bearer ' + j.access_token } });
+      const info = await ui.json();
+      email = info.email || email;
+    } catch (e) {}
     // envia tudo que estava aguardando
     const rows = await rpc('sp_envios_listar', {});
     let n = 0; for (const row of rows.filter(x => x.drive_status !== 'ok')) { const s = await syncEnvio(row.id); if (s.ok) n++; }
-    return res.status(200).send(page('Drive conectado', `Google Drive conectado com sucesso. ${n} envio(s) pendente(s) foram enviados para a pasta.`));
+    return res.status(200).send(page('Drive conectado', `Conectado com a conta <b>${email}</b>. ${n} envio(s) pendente(s) foram enviados para a pasta "Formularios Clientes Studio" na raiz do Drive dessa conta.`));
   }
   if (q.senha === ADMIN_SENHA) {
-    const p = new URLSearchParams({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, response_type: 'code', scope: 'https://www.googleapis.com/auth/drive.file', access_type: 'offline', prompt: 'consent', state });
+    const p = new URLSearchParams({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, response_type: 'code', scope: 'https://www.googleapis.com/auth/drive.file email', access_type: 'offline', prompt: 'consent', state });
     res.writeHead(302, { Location: 'https://accounts.google.com/o/oauth2/v2/auth?' + p.toString() }); return res.end();
   }
   res.writeHead(302, { Location: '/' }); res.end();
