@@ -279,7 +279,7 @@ const ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 const MAX_FILES=4;
 const MAX_MB=10;
 
-const SENHAS={'Construtora00':'Construtora','Planejados01':'Loja de Planejados','Construcao02':'Loja de Revestimento','Arq03':'Arquiteto(a)','Eng04':'Engenharia'};
+const SENHAS={'Construtora00':'Construtora','Planejados01':'Loja de Planejados','Construcao02':'Loja de Revestimento','Arq03':'Arquiteto(a)','Eng04':'Engenharia','Pedras05':'Pedras Naturais'};
 
 let nichoAtual='',respostas={},arquivos=[],anivCount=1;
 
@@ -318,7 +318,26 @@ const EXEMPLOS={
  n_objecoes:'Ex: "Medo de não receber no prazo e desconfiança com empresas menores."',
  n_concorrentes:'Ex: "Construtora Visão, TCA Engenharia e Grupo Plano na região."',
  n_vantagem:'Ex: "Entregamos no prazo, temos pós-venda ativo e o sócio acompanha cada obra pessoalmente."',
- influenciadores:'Ex: "Nunca trabalhamos, mas temos interesse em micro-influenciadores de arquitetura e decoração."'
+ influenciadores:'Ex: "Nunca trabalhamos, mas temos interesse em micro-influenciadores de arquitetura e decoração."',
+ p_historia:'Ex: "Cresci entre chapas e pedreiras. Aos 25 anos decidi trazer pedras que ninguém oferecia por aqui."',
+ p_cultura:'Ex: "Na minha cultura a pedra é herança. Escolho cada chapa pensando em quem vai viver com ela por décadas."',
+ p_apresentacao:'Ex: "Hoje digo que vendo pedras. Queria dizer: eu encontro a pedra única que dá alma ao projeto."',
+ p_marmoraria:'Ex: "A marmoraria corta e instala. Eu escolho, trago e garanto que a pedra certa chegue ao projeto certo."',
+ p_origem_pedras:'Ex: "Quartzitos do Brasil e mármores da Itália e Turquia. Seleciono na pedreira e acompanho o embarque."',
+ p_criterio:'Ex: "Veio, dureza e ausência de fissuras. Recuso chapas de lote irregular, mesmo com preço ótimo."',
+ p_pedra_historia:'Ex: "Uma chapa de quartzito azul que levei 8 meses para encontrar. O cliente se emocionou ao vê-la instalada."',
+ p_feiras:'Ex: "Duas feiras por ano e visitas mensais a pedreiras. O cliente não sabe que rejeito 7 de cada 10 chapas."',
+ p_servicos:'Ex: "Curadoria com o arquiteto, seleção de chapas, logística e supervisão da instalação."',
+ p_bastidores:'Ex: "A escolha chapa a chapa, o controle de qualidade e a logística de transporte, que ele nunca vê."',
+ p_ticket:'Ex: "Ticket médio de R$60 mil; a maior venda foi de R$450 mil, para uma residência autoral."',
+ p_prazo:'Ex: "Entre 45 e 90 dias, da escolha da chapa à instalação."',
+ p_cliente:'Ex: "Casais de 40 a 60 anos, alto patrimônio, casa de veraneio ou residência autoral, que valorizam exclusividade."',
+ p_arquitetos:'Ex: "Arquitetos me procuram por pedras raras. Quero oferecer visitas exclusivas ao acervo e amostras personalizadas."',
+ p_jornada:'Ex: "Indicação de arquitetos e feiras. O melhor canal é o arquiteto que já trouxe três clientes."',
+ p_objecoes:'Ex: "Já perdi venda quando o cliente comparou o valor do m² com o de uma marmoraria comum."',
+ p_cliente_ideal:'Ex: "Quero projetos autorais de alto padrão. Quero parar de atender obras que só buscam preço."',
+ p_concorrentes:'Ex: "Grandes importadores de SP, showrooms de pedras raras e marmorarias que também vendem chapas."',
+ p_reputacao:'Ex: "Falam que sou cara. Quero que digam: é quem encontra a pedra que nenhum outro fornecedor acha."'
 };
 
 // LOGIN
@@ -518,6 +537,41 @@ const NICHOS={
  {titulo:'Concorrência',campos:[
  {id:'n_concorrentes',label:'Quem são os principais concorrentes?',tipo:'textarea'},
  {id:'n_vantagem',label:'O que vocês fazem melhor?',tipo:'textarea'}
+ ]}
+ ]},
+ 'Pedras05':{label:'Pedras Naturais',secoes:[
+ {titulo:'História & Essência',campos:[
+ {id:'p_historia',label:'Conte a sua história: de onde você vem, o que te aproximou da pedra e o que te fez transformar isso em negócio.',tipo:'textarea'},
+ {id:'p_cultura',label:'Sua origem e sua cultura influenciam a forma como você enxerga, escolhe e apresenta as pedras? Como?',tipo:'textarea'},
+ {id:'p_apresentacao',label:'Quando alguém pergunta "o que você faz?", o que você responde hoje? E o que você GOSTARIA de poder responder?',tipo:'textarea'},
+ {id:'p_marmoraria',label:'Onde termina o trabalho de uma marmoraria e onde começa o seu? O que você faz que ela não faz?',tipo:'textarea'}
+ ]},
+ {titulo:'A Pedra & a Curadoria',campos:[
+ {id:'p_origem_pedras',label:'De onde vêm as pedras que você traz (países, regiões, pedreiras) e como é o caminho até o cliente final?',tipo:'textarea'},
+ {id:'p_criterio',label:'Como você escolhe uma pedra? O que faz uma pedra ser aprovada por você e o que faz você recusar?',tipo:'textarea'},
+ {id:'p_exclusividade',label:'Quão exclusivos são os materiais com que você trabalha?',tipo:'radio',opcoes:['A maioria só eu trago','Parte é exclusiva','Materiais raros, mas não exclusivos','Exclusividade não é meu diferencial hoje']},
+ {id:'p_pedra_historia',label:'Qual a pedra mais especial que já passou por você? Conte a história dela.',tipo:'textarea'},
+ {id:'p_feiras',label:'Você viaja para selecionar pedras (feiras, pedreiras, fornecedores)? Com que frequência e o que seus clientes não sabem sobre essas viagens?',tipo:'textarea'}
+ ]},
+ {titulo:'Serviço, Valor & Bastidores',campos:[
+ {id:'p_servicos',label:'Quais serviços você oferece além de apresentar a pedra? (curadoria com o arquiteto, seleção de chapas, logística, supervisão da instalação...)',tipo:'textarea'},
+ {id:'p_bastidores',label:'Quais partes do seu trabalho o cliente nunca vê e que, se vissem, fariam ele entender melhor o valor do que você cobra?',tipo:'textarea'},
+ {id:'p_modelo',label:'Como o seu trabalho é vendido hoje?',tipo:'radio',opcoes:['Vendo a pedra (chapa ou material)','Cobro pela curadoria e seleção','Trabalho em parceria com arquitetos e marmorarias','Uma combinação desses modelos']},
+ {id:'p_ticket',label:'Qual o ticket médio de uma venda e qual foi a maior que você já fez?',tipo:'text'},
+ {id:'p_prazo',label:'Da escolha da pedra até ela instalada, quanto tempo leva em média?',tipo:'text'},
+ {id:'p_showroom',label:'Onde o cliente vê e escolhe a pedra hoje?',tipo:'radio',opcoes:['Showroom próprio','Estoque com visita agendada','Apenas por fotos, vídeos e amostras','Levo até o cliente ou o arquiteto']}
+ ]},
+ {titulo:'Público, Decisor & Jornada',campos:[
+ {id:'p_cliente',label:'Quem compra de você? Descreva o cliente: quem é, o que valoriza e como chega até você.',tipo:'textarea'},
+ {id:'p_decisor',label:'Quem decide qual pedra entra no projeto?',tipo:'radio',opcoes:['O cliente final','O arquiteto ou designer','O marceneiro ou a marmoraria','Varia de projeto para projeto']},
+ {id:'p_arquitetos',label:'Como é sua relação com arquitetos e designers hoje? O que eles buscam em você e o que você gostaria de oferecer a eles?',tipo:'textarea'},
+ {id:'p_jornada',label:'Por quais canais os clientes chegam até você hoje? Qual deles traz os melhores clientes?',tipo:'textarea'},
+ {id:'p_objecoes',label:'Já perdeu uma venda por comparação de preço ou por confundirem seu serviço com o de outro fornecedor? Como você explica seu valor nesses momentos?',tipo:'textarea'},
+ {id:'p_cliente_ideal',label:'Que tipo de cliente e de projeto você mais quer atrair nos próximos 12 meses? E quais você gostaria de parar de atender?',tipo:'textarea'}
+ ]},
+ {titulo:'Mercado & Reputação',campos:[
+ {id:'p_concorrentes',label:'Quem você enxerga como referência e quem como concorrência? Inclua importadores, marmorarias e showrooms de pedra, no Brasil e fora.',tipo:'textarea'},
+ {id:'p_reputacao',label:'O que um arquiteto ou cliente diz sobre você quando você não está na sala? E o que você gostaria que dissesse?',tipo:'textarea'}
  ]}
  ]}
 };
